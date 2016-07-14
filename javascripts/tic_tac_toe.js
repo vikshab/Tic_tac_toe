@@ -1,7 +1,5 @@
 $(document).ready(function(){
   var game;
-  // var boardsize = 5
-  // var board = new Array(boardsize).fill(new Array(boardsize).fill(null));
   var board = [[null, null, null, null], [null, null, null, null], [null, null, null, null], [null, null, null, null]];
   var boardLength = board.length;
   var cross = "X";
@@ -17,32 +15,33 @@ $(document).ready(function(){
   });
 
   $(".cell").click(function(){
-    // if(game == userVsUser){
-    //   if(win){
-    //     return;
-    //   }
-    //   var id = $(this).attr("id");
-    //   var row = id[0];
-    //   var column = id[1];
-    //   var player;
-    //
-    //   if(board[row][column] == null){
-    //     if(move == 1 || move % 2 != 0){
-    //       player = cross;
-    //       insertIntoCell(id, cross);
-    //     }
-    //     else if (move % 2 == 0){
-    //       player = zero;
-    //       insertIntoCell(id, zero);
-    //     }
-    //
-    //     if(move >= 4){
-    //       checkWin(board, row, column, boardLength, player)
-    //     }
-    //     move ++;
-    //   }
-    //   endGame();
-    // }
+    if(game == userVsUser){
+      if(win){
+        return;
+      }
+      var id = $(this).attr("id");
+      var row = id[0];
+      var column = id[1];
+      var player;
+
+      if(board[row][column] == null){
+        if(move == 1 || move % 2 != 0){
+          player = cross;
+          insertIntoCell(id, cross);
+        }
+        else if (move % 2 == 0){
+          player = zero;
+          insertIntoCell(id, zero);
+        }
+
+        if(move >= 4){
+          checkWin(board, row, column, boardLength, player)
+        }
+        move ++;
+      }
+      endGame();
+    }
+    
     if(game == userVsComputer){
       if(win || nobody){
         return;
@@ -72,31 +71,6 @@ $(document).ready(function(){
         insertIntoCell(id, zero);
         move ++;
       }
-
-      // All other computer moves depend on the Xs' postions on the board
-      // if(move >= 2 && move % 2 == 0){
-      //   var id = selectCoordinates(row, column, board, boardLength)
-      //   if(id != null){
-      //     insertIntoCell(id, zero);
-      //     move ++;
-      //   }
-      //   else{
-      //     nobody = true;
-      //     alert("You lost")
-      //   }
-      // }
-      //
-      // if(move >= 4){
-      //   if(checkWin(board, row, column, boardLength)){
-      //     alert(player + " wins!");
-      //   }
-      //   else if(id != null) {
-      //     if(checkWin(board, id[0], id[1], boardLength)){
-      //       console.log(checkWin(board, id[0], id[1], boardLength))
-      //       alert("Computer wins!");
-      //     }
-      //   }
-      // }
 
       if(move >= 4){
         // Computer moves
@@ -156,8 +130,6 @@ $(document).ready(function(){
     var largestCountZero = Math.max.apply(Math, arrayZero);
     var x;
     var y;
-
-
 
   // Generate coordinates based on X count
   if(largestCount >= largestCountZero) {
@@ -507,18 +479,6 @@ $(document).ready(function(){
     }
     return rightDiagonalCount;
   }
-
-
-  // function checkWin(board, x, y, boardLength){
-  //   if(checkRow(x, board, boardLength) ||
-  //     checkColumn(y, board, boardLength) ||
-  //     checkLeftDiagonal(board, boardLength) ||
-  //     checkRightDiagonal(board, boardLength)){
-  //     win = true;
-  //     return win;
-  //   }
-  //   return false;
-  // }
 
   function checkRow(x, board, boardLength){
     if(board[x][0] == null){
