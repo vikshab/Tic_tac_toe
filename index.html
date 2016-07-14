@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tic Tac Toe</title>
+    <meta name="viewport" content="width=320" />
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" media="all" href="stylesheets/tic_tac_toe.css"/>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/tic_tac_toe.js"></script>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row content">
+        <!-- Game options and reset button -->
+        <div class="col-sm-2 sidenav">
+          <button type="button" class="btn btn-danger" onClick="window.location.reload()">Reset</button>
+          <div class="radio">
+            <label><input type="radio" name="optradio" class="game_version" value="userVsUser">User vs user</label>
+          </div>
+          <div class="radio">
+            <label><input type="radio" name="optradio" class="game_version" value="userVsComputer">User vs computer</label>
+          </div>
+        </div>
+
+        <!-- Game board -->
+        <div class="col-sm-8 text-left">
+          <h1>TIC TAC TOE <small>Developed by Victoria Shabunia</small>
+          </h1>
+          <hr>
+          <div id="gameboard">
+            <div class="cells">
+              <div class="cell", id="00" value="false"></div>
+              <div class="cell", id="01" value="false"></div>
+              <div class="cell", id="02" value="false"></div>
+              <div class="cell", id="03" value="false"></div>
+
+              <div class="cell", id="10" value="false"></div>
+              <div class="cell", id="11" value="false"></div>
+              <div class="cell", id="12" value="false"></div>
+              <div class="cell", id="13" value="false"></div>
+
+              <div class="cell", id="20" value="false"></div>
+              <div class="cell", id="21" value="false"></div>
+              <div class="cell", id="22" value="false"></div>
+              <div class="cell", id="23" value="false"></div>
+
+              <div class="cell", id="30" value="false"></div>
+              <div class="cell", id="31" value="false"></div>
+              <div class="cell", id="32" value="false"></div>
+              <div class="cell", id="33" value="false"></div>
+            </div>
+            <!-- end of gameboard -->
+          </div>
+          <!-- end of col-sm-8 text-left -->
+        </div>
+        <!-- end of row container -->
+      </div>
+      <!-- end of container-fluid-->
+    </div>
+  </body>
+</html>
