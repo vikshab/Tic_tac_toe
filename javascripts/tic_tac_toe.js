@@ -6,7 +6,7 @@ $(document).ready(function(){
   var zero = "O";
   var move = 1;
   var win = false;
-  var nobody = false;
+  var noWin = false;
   var userVsUser = "userVsUser";
   var userVsComputer = "userVsComputer";
 
@@ -43,7 +43,7 @@ $(document).ready(function(){
     // }
 
     if(game == userVsComputer){
-      if(win || nobody){
+      if(win || noWin){
         return;
       }
 
@@ -53,11 +53,12 @@ $(document).ready(function(){
       var column = id[1];
 
       // User moves
-      if(move == 1 || move % 2 != 0){
-        insertIntoCell(id, cross);
+      if(board[row][column] == null){
+        if(move == 1 || move % 2 != 0){
+          insertIntoCell(id, cross);
+        }
+        move ++;
       }
-      move ++;
-
       // First computer's move is random
       if(move == 2){
         var x = generateRandomCoordinate(boardLength-1);
@@ -82,8 +83,8 @@ $(document).ready(function(){
             move ++;
           }
           else{
-            nobody = true;
-            alert("Nobody wins");
+            noWin = true;
+            alert("Loose-loose situation!");
             return;
           }
         }
@@ -103,7 +104,6 @@ $(document).ready(function(){
           alert("Computer wins!")
         }
       }
-
       endGame();
     };
   });
@@ -137,9 +137,6 @@ $(document).ready(function(){
     var arrayZero = [rowZeroMax, columnZeroMax, leftDiagonalZero, rightDiagonalZero]
     var largestCountZero = Math.max.apply(Math, arrayZero);
 
-    var x;
-    var y;
-
     // Compare user's and computure's 'close to win' positions and
     // assign variable accordingly
     var largestCount = largestCountX >= largestCountZero ?  largestCountX : largestCountZero;
@@ -151,16 +148,29 @@ $(document).ready(function(){
     var columnMax = largestCountX >= largestCountZero ? columnXmax : columnZeroMax;
 
     if(largestCount.toString() != "0"){
-      generateCoordinates(largestCount, row, column, leftDiagonal, rightDiagonal, rowMax, columnMax);
+      id = generateCoordinates(largestCount, row, column, leftDiagonal, rightDiagonal, rowMax, columnMax);
+    }
+    else if(emptyRow() || emptyColumn() || emptyLeftDiagonal() || emptyRightDiagonal()){
+      var x = generateRandomCoordinate(boardLength-1);
+      var y = generateRandomCoordinate(boardLength-1);
+
+      while(board[x][y]!= null){
+        x = generateRandomCoordinate(boardLength-1);
+        y = generateRandomCoordinate(boardLength-1);
+      }
+
+      id = x.toString()+ y.toString();
     }
     else{
-      id = null;
+      id=null;
     }
+
     return id;
   }
 
   function generateCoordinates(largestCount, row, column, leftDiagonal, rightDiagonal, rowMax, columnMax){
-    var generatedCoordinates=[];
+    // var generatedCoordinates=[];
+    var x, y;
 
     if(largestCount.toString() == rowMax.toString()){
       x = row.indexOf(largestCount);
@@ -197,10 +207,11 @@ $(document).ready(function(){
       y = i;
     }
 
-    generatedCoordinates.push(x);
-    generatedCoordinates.push(y);
+    // generatedCoordinates.push(x);
+    // generatedCoordinates.push(y);
 
-    id = generatedCoordinates[0].toString() + generatedCoordinates[1].toString();
+    // return id = generatedCoordinates[0].toString() + generatedCoordinates[1].toString();
+    return id = x.toString() + y.toString();
   }
 
   function checkWin(board, x, y, boardLength){
@@ -226,48 +237,83 @@ $(document).ready(function(){
     }
   }
 
-  function checkEmptyRow(){
-    var empty = false;
+  function emptyRow(){
+    var countNull=0;
     for(i=0; i<boardLength; i++){
       for(j=0; j<boardLength; j++){
         if(board[i][j] != null){
           break;
         }
-        else {
-          empty=true;
+        else{
+          countNull++;
+          console.log(countNull)
         }
       }
+      if(countNull == boardLength){
+        return true;
+      }
+      countNull=0;
     }
-    return empty;
+    return false;
   }
 
-  function checkEmptyColumn(){
+  function emptyColumn(){
+    // var empty = false;
+    var countNull=0;
+
+
     for(i=0; i<boardLength; i++){
       for(j=0; j<boardLength; j++){
         if(board[j][i] != null){
-          return false;
+          break;
+        }
+        else{
+          countNull++;
         }
       }
+      if(countNull == boardLength){
+        return true;
+      }
+      countNull=0;
     }
-    return true;
+    return false;
   }
 
-  function checkEmptyLeftDiagonal(){
+  function emptyLeftDiagonal(){
+    // var empty = false;
+    var countNull=0;
+
     for(i=0; i<boardLength; i++){
       if(board[i][i]!= null){
-        return false;
+        break;
+      }
+      else{
+        countNull++;
       }
     }
-    return true;
+    if(countNull == boardLength){
+      return true;
+    }
+    return false;
   }
 
-  function checkEmptyRightDiagonal(){
+  function emptyRightDiagonal(){
+    // var empty = false;
+    var countNull=0;
+
+
     for(i=0; i<boardLength; i++){
       if(board[boardLength-i-1][i] != null){
-        return false;
+        break;
+      }
+      else{
+          countNull++;
       }
     }
-    return true;
+    if(countNull == boardLength){
+      return true;
+    }
+    return false;
   }
 
   // Returns an array of integers, where index
