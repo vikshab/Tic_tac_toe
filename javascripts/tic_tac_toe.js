@@ -15,38 +15,39 @@ $(document).ready(function(){
   });
 
   $(".cell").click(function(){
-    if(game == userVsUser){
-      if(win){
-        return;
-      }
-      var id = $(this).attr("id");
-      var row = id[0];
-      var column = id[1];
-      var player;
+    // if(game == userVsUser){
+    //   if(win){
+    //     return;
+    //   }
+    //   var id = $(this).attr("id");
+    //   var row = id[0];
+    //   var column = id[1];
+    //   var player;
+    //
+    //   if(board[row][column] == null){
+    //     if(move == 1 || move % 2 != 0){
+    //       player = cross;
+    //       insertIntoCell(id, cross);
+    //     }
+    //     else if (move % 2 == 0){
+    //       player = zero;
+    //       insertIntoCell(id, zero);
+    //     }
+    //
+    //     if(move >= 4){
+    //       checkWin(board, row, column, boardLength, player)
+    //     }
+    //     move ++;
+    //   }
+    //   endGame();
+    // }
 
-      if(board[row][column] == null){
-        if(move == 1 || move % 2 != 0){
-          player = cross;
-          insertIntoCell(id, cross);
-        }
-        else if (move % 2 == 0){
-          player = zero;
-          insertIntoCell(id, zero);
-        }
-
-        if(move >= 4){
-          checkWin(board, row, column, boardLength, player)
-        }
-        move ++;
-      }
-      endGame();
-    }
-    
     if(game == userVsComputer){
       if(win || nobody){
         return;
       }
 
+      // Find coordinates of the cell
       var id = $(this).attr("id");
       var row = id[0];
       var column = id[1];
@@ -59,12 +60,12 @@ $(document).ready(function(){
 
       // First computer move is random
       if(move == 2){
-        var x = Math.round(Math.random()*3);
-        var y = Math.round(Math.random()*3);
+        var x = generateRandomCoordinate(boardLength-1);
+        var y = generateRandomCoordinate(boardLength-1);
 
         while(board[x][y]!= null){
-          x = Math.round(Math.random()*3);
-          y = Math.round(Math.random()*3);
+          x = generateRandomCoordinate(boardLength-1);
+          y = generateRandomCoordinate(boardLength-1);
         }
 
         id = x.toString()+ y.toString();
@@ -106,6 +107,10 @@ $(document).ready(function(){
     };
   });
 
+  functin generateRandomCoordinate(boardLength){
+    return Math.round(Math.random()* boardLength);
+  }
+
   function selectCoordinates(x, y, board, boardLength){
     var generatedCoordinates=[];
 
@@ -138,28 +143,28 @@ $(document).ready(function(){
       if(largestCount.toString() == largestCountX.toString()){
         console.log('row')
         x = rowX.indexOf(largestCount);
-        y = Math.round(Math.random()*3);
+        y = generateRandomCoordinate(boardLength-1);
 
         while(board[x][y]!= null){
-          y = Math.round(Math.random()*3)
+          y = generateRandomCoordinate(boardLength-1);
         }
       }
       else if(largestCount.toString() == largestCountY.toString()){
         console.log("column")
 
         y = columnX.indexOf(largestCount);
-        x = Math.round(Math.random()*3);
+        x = generateRandomCoordinate(boardLength-1);
 
         while(board[x][y]!= null){
-          x = Math.round(Math.random()*3)
+          x = generateRandomCoordinate(boardLength-1);
         }
       }
       else if(largestCount.toString() == leftDiagonalX.toString()){
         console.log("left diag")
-        i = Math.round(Math.random()*3);
+        i = generateRandomCoordinate(boardLength-1);
 
         while(board[i][i]!= null){
-          i = Math.round(Math.random()*3);
+          i = generateRandomCoordinate(boardLength-1);
         }
         x = i;
         y = i;
@@ -167,10 +172,10 @@ $(document).ready(function(){
       else if(largestCount.toString() == rightDiagonalX.toString()){
         console.log("right diag")
 
-        i = Math.round(Math.random()*3);
+        i = generateRandomCoordinate(boardLength-1);
 
         while(board[boardLength-i-1][i]!= null){
-          i = Math.round(Math.random()*3);
+          i = generateRandomCoordinate(boardLength-1);
         }
         x = boardLength-i-1;
         y = i;
@@ -192,28 +197,28 @@ $(document).ready(function(){
       if(largestCountZero.toString() == largestCountZeroRow.toString()){
         console.log('row')
         x = rowZero.indexOf(largestCountZero);
-        y = Math.round(Math.random()*3);
+        y = generateRandomCoordinate(boardLength-1);
 
         while(board[x][y]!= null){
-          y = Math.round(Math.random()*3)
+          y = generateRandomCoordinate(boardLength-1);
         }
       }
       else if(largestCountZero.toString() == largestCountZeroColumn.toString()){
         console.log("column")
 
         y = columnZero.indexOf(largestCountZero);
-        x = Math.round(Math.random()*3);
+        x = generateRandomCoordinate(boardLength-1);
 
         while(board[x][y]!= null){
-          x = Math.round(Math.random()*3)
+          x = generateRandomCoordinate(boardLength-1);
         }
       }
       else if(largestCountZero.toString() == leftDiagonalZero.toString()){
         console.log("left diag")
-        i = Math.round(Math.random()*3);
+        i = generateRandomCoordinate(boardLength-1);
 
         while(board[i][i]!= null){
-          i = Math.round(Math.random()*3);
+          i = generateRandomCoordinate(boardLength-1);
         }
         x = i;
         y = i;
@@ -221,10 +226,10 @@ $(document).ready(function(){
       else if(largestCountZero.toString() == rightDiagonalZero.toString()){
         console.log("right diag")
 
-        i = Math.round(Math.random()*3);
+        i = generateRandomCoordinate(boardLength-1);
 
         while(board[boardLength-i-1][i]!= null){
-          i = Math.round(Math.random()*3);
+          i = generateRandomCoordinate(boardLength-1);
         }
         x = boardLength-i-1;
         y = i;
@@ -241,6 +246,17 @@ $(document).ready(function(){
   }
     return id;
   }
+
+  function checkWin(board, x, y, boardLength){
+    if(checkRow(x, board, boardLength) ||
+     checkColumn(y, board, boardLength) ||
+     checkLeftDiagonal(board, boardLength) ||
+     checkRightDiagonal(board, boardLength)){
+     win = true;
+     return win;
+    }
+     return false;
+   }
 
   function insertIntoCell(id, value){
     // if(id == null){
@@ -484,6 +500,7 @@ $(document).ready(function(){
     if(board[x][0] == null){
       return false;
     }
+
     for(i=1; i<boardLength; i++){
       if(board[x][0]!= board[x][i]){
         return false;
