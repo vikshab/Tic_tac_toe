@@ -9,10 +9,6 @@ $(document).ready(function(){
   var noWin = false;
   var userVsUser = "userVsUser";
   var userVsComputer = "userVsComputer";
-  var emptyRow = false;
-  var emptyColumn = false;
-  var emptyLeftDiagonal = false;
-  var emptyRightDiagonal = false;
 
   $(".game_version").click(function(){
     game = $(this).attr("value");
