@@ -136,12 +136,16 @@ $(document).ready(function(){
     var x, y;
 
     if (largestCount.toString() == array[0].toString()) {
+      // Largest count in the row
+      // find row and generate random column;
       x = countNumberInRow(value, compareWithValue).coordinate;
       y = generateRandomNumber();
       while (board[x][y] != null) {
         y = generateRandomNumber();
       }
     } else if (largestCount.toString() == array[1].toString()) {
+      // Largest count in the column
+      // find column and generate random row;
       y = countNumberInColumn(value, compareWithValue).coordinate;;
       x = generateRandomNumber();
 
@@ -149,6 +153,8 @@ $(document).ready(function(){
         x = generateRandomNumber();
       }
     } else if(largestCount.toString() == array[2].toString()){
+      // Largest count in the left diagonal
+      // generate random coordinate in the left diagonal;
       i = generateRandomNumber();
 
       while (board[i][i] != null) {
@@ -157,6 +163,8 @@ $(document).ready(function(){
       x = i;
       y = i;
     } else if (largestCount.toString() == array[3].toString()) {
+      // Largest count in the right diagonal
+      // generate random coordinate in the right diagonal;
       i = generateRandomNumber();
 
       while (board[boardLength - i - 1][i]!= null) {
