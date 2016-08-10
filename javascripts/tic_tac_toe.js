@@ -29,7 +29,7 @@ $(document).ready(function(){
     }
 
     if (move % 2 == 0 && move > 3) {
-      computerThinksBeforeGo(id, board);
+      computerThinksBeforeGo(id);
     }
 
     checkLooseLooseSituation();
@@ -73,9 +73,8 @@ $(document).ready(function(){
    * Insert computer's value into the cell and check if there is a win
    *
    * @param {id} id - cell id, that user clicks on
-   * @param {board} board - game board (array)
    */
-  function computerThinksBeforeGo(id, board) {
+  function computerThinksBeforeGo(id) {
     var id = selectCoordinates(id[0], id[1]);
     if (id != null) {
       insertIntoCell(id, computer);
@@ -365,7 +364,7 @@ $(document).ready(function(){
   function insertIntoCell(id, value) {
     board[id[0]][id[1]] = value;
 
-    // Lets make computer think for a seconds:)
+    // Delay in computer's move, so it will insert value a bit later than
     if (value == computer) {
       setTimeout(function() { document.getElementById(id).innerHTML = value; }, 500);
     } else {
