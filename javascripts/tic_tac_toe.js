@@ -1,39 +1,162 @@
 $(document).ready(function(){
-  var board = [[null, null, null, null], [null, null, null, null], [null, null, null, null], [null, null, null, null]];
-  var boardLength = board.length;
-  var cross = "X";
-  var zero = "O";
-  var move = 1;
-  var win = false;
-  var noWin = false;
-  var player, computer;
+  // Board options
+  var BOARD3x3 = [[null, null, null],
+                  [null, null, null],
+                  [null, null, null]];
+  var BOARD4x4 = [[null, null, null, null],
+                  [null, null, null, null],
+                  [null, null, null, null],
+                  [null, null, null, null]];
+  var BOARD5x5 = [[null, null, null, null, null],
+                  [null, null, null, null, null],
+                  [null, null, null, null, null],
+                  [null, null, null, null, null],
+                  [null, null, null, null, null]];
+  var BOARD6x6 =  [[null, null, null, null, null, null],
+                  [null, null, null, null, null, null],
+                  [null, null, null, null, null, null],
+                  [null, null, null, null, null, null],
+                  [null, null, null, null, null, null],
+                  [null, null, null, null, null, null]];
+  var BOARD;
+  var SELECTEDBOARD = null;
+  var BOARDLENGTH;
+  var CROSS = "X";
+  var ZERO = "O";
+  var MOVE;
+  var WIN, NOWIN;
+  var USER, COMPUTER;
 
   $(".user_player").click(function() {
-    player = $(this).attr("value");
-    computer = player == cross ? zero : cross;
+    USER = $(this).attr("value");
+    COMPUTER = USER == CROSS ? ZERO : CROSS;
+    if (USER && BOARD) {
+      cleanBoard();
+    }
+    startGame()
   });
 
-  $(".cell").click(function() {
-    if (win || noWin) {
+  $(".selected_board").click(function() {
+    SELECTEDBOARD = $(this).attr("value");
+    if (USER && BOARD) {
+      cleanBoard();
+    }
+    startGame()
+  });
+
+  $("#reset").click(function() {
+    $(".cell").empty()
+    cleanBoard();
+    // location.reload();
+    startGame()
+  });
+
+  // $("#start").click(function() {
+  //   var boardGameExists = $(".game").children()[0] != null ? true : false;
+  //   if (boardGameExists) {
+  //     $(".game").empty();
+  //   }
+  //   start();
+  // });
+
+  function startGame() {
+    if (USER && SELECTEDBOARD) {
+      var boardGameExists = $(".game").children()[0] != null ? true : false;
+      if (boardGameExists) {
+        $(".game").empty();
+        cleanBoard();
+      }
+      WIN = false;
+      NOWIN = false;
+      MOVE = 1;
+      start();
+    }
+  }
+
+  function cleanBoard() {
+    for (var i = 0; i < BOARD.length; i ++) {
+      for (var j = 0; j < BOARD.length; j ++) {
+        BOARD[i][j] = null;
+      }
+    }
+  }
+
+  function start() {
+    switch (SELECTEDBOARD) {
+      case "board3x3":
+      BOARD = BOARD3x3;
+      break;
+      case "board4x4":
+      BOARD = BOARD4x4;
+      break;
+      case "board5x5":
+      BOARD = BOARD5x5;
+      break;
+      case "board6x6":
+      BOARD = BOARD6x6;
+      break;
+      default :
+      null;
+    }
+    if (BOARD == null) {
+      alert("Select board");
       return;
     }
 
-    var id = $(this).attr("id");
+    if (USER == null) {
+      alert("Select value, please");
+      return;
+    }
 
-    if (move == 1 || move % 2 != 0) {
+    BOARDLENGTH = BOARD.length;
+
+    var gameLocation = $(".game");
+    var gameboard = document.createElement('div');
+    var cells = document.createElement('div');
+    gameboard.className = "gameboard";
+    gameboard.id = SELECTEDBOARD;
+    cells.className = "cells";
+
+    gameLocation[0].appendChild(gameboard);
+    gameboard.appendChild(cells);
+
+    for (var i = 0; i < BOARD.length; i ++) {
+      for (var j = 0; j < BOARD.length; j ++) {
+        var cell = document.createElement('div');
+        cell.id = i.toString() + j.toString();
+        cell.className = "cell";
+        cell.onclick = function() { play(this) };
+        cell.setAttribute("value", "false");
+        cells.appendChild(cell);
+      }
+    }
+  }
+
+  function play(that) {
+    // console.log("got here")
+    // console.log(that)
+    // console.log(that.getAttribute("id"))
+
+    if (WIN || NOWIN) {
+      return;
+    }
+
+    var id = that.getAttribute("id");
+
+    if (MOVE == 1 || MOVE % 2 != 0) {
       userGoes(id);
     }
 
-    if (move == 2) {
+    if (MOVE == 2) {
       computerGoesFirstTimeRandomly();
     }
 
-    if (move % 2 == 0 && move > 3) {
+    if (MOVE % 2 == 0 && MOVE > 3) {
       computerThinksBeforeGo(id);
     }
 
     checkLooseLooseSituation();
-  });
+  }
 
   /**
    * Insert user's value into the cell and check if there is a win
@@ -45,12 +168,14 @@ $(document).ready(function(){
     var row = id[0];
     var column = id[1];
 
-    if (board[row][column] == null) {
-      insertIntoCell(id, player);
-      if(move >= boardLength){
-        checkWin(row, column, player);
+    if (BOARD[row][column] == null) {
+      insertIntoCell(id, USER);
+      if(MOVE >= BOARDLENGTH){
+        if(checkWin(row, column, USER)) {
+          return;
+        }
       }
-      move ++;
+      MOVE ++;
     }
   }
 
@@ -63,9 +188,9 @@ $(document).ready(function(){
   function computerGoesFirstTimeRandomly() {
     var id = generateRandomCoordinates();
 
-    if (board[id[0]][id[1]] == null) {
-      insertIntoCell(id, computer);
-      move ++;
+    if (BOARD[id[0]][id[1]] == null) {
+      insertIntoCell(id, COMPUTER);
+      MOVE ++;
     }
   }
 
@@ -77,12 +202,12 @@ $(document).ready(function(){
   function computerThinksBeforeGo(id) {
     var id = selectCoordinates(id[0], id[1]);
     if (id != null) {
-      insertIntoCell(id, computer);
-      checkWin(id[0], id[1], computer)
-      move ++;
+      insertIntoCell(id, COMPUTER);
+      checkWin(id[0], id[1], COMPUTER)
+      MOVE ++;
     }
     else {
-      noWin = true;
+      NOWIN = true;
     }
   }
 
@@ -91,19 +216,19 @@ $(document).ready(function(){
    * @return nothing, just alert
    */
   function checkLooseLooseSituation() {
-    if (noWin) {
+    if (NOWIN) {
       alert("Loose-loose situation!");
       return;
     }
   }
 
   /**
-   * Get a random number from 0 inclusively to boardLength-1 inclusively
+   * Get a random number from 0 inclusively to BOARDLENGTH-1 inclusively
    *
    * @return {integer} a random integer number
    */
   function generateRandomNumber() {
-    var max = boardLength - 1;
+    var max = BOARDLENGTH - 1;
     var min = 0;
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
@@ -117,7 +242,7 @@ $(document).ready(function(){
     var row = generateRandomNumber();
     var column = generateRandomNumber();
 
-    while (board[row][column] != null) {
+    while (BOARD[row][column] != null) {
       row = generateRandomNumber();
       column = generateRandomNumber();
     }
@@ -134,15 +259,25 @@ $(document).ready(function(){
    * @return {string} a random string coordinates "xy"
    */
   function selectCoordinates(x, y) {
-    var countXRow = countNumberInRow(cross, zero).count;
-    var countXColumn = countNumberInColumn(cross, zero).count;
-    var leftDiagonalX = countAllLeftDiagonal(cross, zero);
-    var rightDiagonalX = countAllRightDiagonal(cross, zero);
+    var countXRow = countNumberInRow(CROSS, ZERO).count;
+    var countXColumn = countNumberInColumn(CROSS, ZERO).count;
+    var leftDiagonalX = countAllLeftDiagonal(CROSS, ZERO);
+    var rightDiagonalX = countAllRightDiagonal(CROSS, ZERO);
 
-    var countZeroRow = countNumberInRow(zero, cross).count;
-    var countZeroColumn = countNumberInColumn(zero, cross).count;
-    var leftDiagonalZero = countAllLeftDiagonal(zero, cross);
-    var rightDiagonalZero = countAllRightDiagonal(zero, cross);
+    var countZeroRow = countNumberInRow(ZERO, CROSS).count;
+    var countZeroColumn = countNumberInColumn(ZERO, CROSS).count;
+    var leftDiagonalZero = countAllLeftDiagonal(ZERO, CROSS);
+    var rightDiagonalZero = countAllRightDiagonal(ZERO, CROSS);
+
+    console.log("countXRow " + countXRow)
+    console.log("countXColumn " + countXColumn)
+    console.log("leftDiagonalX " + leftDiagonalX)
+    console.log("rightDiagonalX" + rightDiagonalX)
+
+    console.log("countZeroRow " + countZeroRow)
+    console.log("countZeroColumn " + countZeroColumn)
+    console.log("leftDiagonalZero " + leftDiagonalZero)
+    console.log("rightDiagonalZero" + rightDiagonalZero)
 
     var arrayX = [countXRow, countXColumn, leftDiagonalX, rightDiagonalX]
     var arrayZero = [countZeroRow, countZeroColumn, leftDiagonalZero, rightDiagonalZero]
@@ -150,18 +285,19 @@ $(document).ready(function(){
     var largestCountZero = Math.max.apply(Math, arrayZero);
 
     if (largestCountX >= largestCountZero && largestCountX != 0) {
-      var value = cross;
-      var compareWithValue = zero;
+      var value = CROSS;
+      var compareWithValue = ZERO;
       id = generateCoordinates(largestCountX, arrayX, value, compareWithValue);
     } else if (largestCountZero > largestCountX && largestCountZero != 0) {
-      var value = zero;
-      var compareWithValue = cross;
+      var value = ZERO;
+      var compareWithValue = CROSS;
       id = generateCoordinates(largestCountZero, arrayZero, value, compareWithValue);
+
     } else if (largestCountX == 0 && largestCountZero == 0 &&
-              !isEmpty(countNumberInRow(null, cross).count) &&
-              !isEmpty(countNumberInColumn(null, cross).count) &&
-              !isEmpty(countAllLeftDiagonal(null, cross)) &&
-              !isEmpty(countAllRightDiagonal(null, cross))) {
+              !isEmpty(countNumberInRow(null, CROSS).count) &&
+              !isEmpty(countNumberInColumn(null, CROSS).count) &&
+              !isEmpty(countAllLeftDiagonal(null, CROSS)) &&
+              !isEmpty(countAllRightDiagonal(null, CROSS))) {
       id = null;
     } else {
       id = generateRandomCoordinates();
@@ -177,7 +313,7 @@ $(document).ready(function(){
    * @return {bolean} true if board has empty row||column||diagonal
    */
   function isEmpty(value) {
-    return value == boardLength;
+    return value == BOARDLENGTH;
   }
 
   /**
@@ -187,7 +323,7 @@ $(document).ready(function(){
    * @param {array} array - array of X or O counts on the board
    * @param {value} value - value on X or O (needed to internal funcion countNumberInRow())
    * @param {compareWithValue} compareWithValue - value of O or X (the opposite to the above value)
-   * @return {string} a random string coordinates "xy"
+   * @return {string} random string coordinates "xy"
    */
   function generateCoordinates(largestCount, array, value, compareWithValue){
     var x, y;
@@ -197,7 +333,7 @@ $(document).ready(function(){
       // find row and generate random column;
       x = countNumberInRow(value, compareWithValue).coordinate;
       y = generateRandomNumber();
-      while (board[x][y] != null) {
+      while (BOARD[x][y] != null) {
         y = generateRandomNumber();
       }
     } else if (largestCount.toString() == array[1].toString()) {
@@ -206,7 +342,7 @@ $(document).ready(function(){
       y = countNumberInColumn(value, compareWithValue).coordinate;;
       x = generateRandomNumber();
 
-      while (board[x][y] != null) {
+      while (BOARD[x][y] != null) {
         x = generateRandomNumber();
       }
     } else if(largestCount.toString() == array[2].toString()){
@@ -214,7 +350,7 @@ $(document).ready(function(){
       // generate random coordinate in the left diagonal;
       i = generateRandomNumber();
 
-      while (board[i][i] != null) {
+      while (BOARD[i][i] != null) {
         i = generateRandomNumber();
       }
       x = i;
@@ -224,10 +360,10 @@ $(document).ready(function(){
       // generate random coordinate in the right diagonal;
       i = generateRandomNumber();
 
-      while (board[boardLength - i - 1][i]!= null) {
+      while (BOARD[BOARDLENGTH - i - 1][i]!= null) {
         i = generateRandomNumber();
       }
-      x = boardLength - i - 1;
+      x = BOARDLENGTH - i - 1;
       y = i;
     }
     return id = x.toString() + y.toString();
@@ -256,22 +392,23 @@ $(document).ready(function(){
     var maxCount = 0;
     var finalCoordinate;
 
-    for (var i = 0; i < boardLength; i ++) {
+    for (var i = 0; i < BOARDLENGTH; i ++) {
       var count = 0;
       var currentCoordinate = i;
 
-      for (var j = 0; j < boardLength; j ++) {
-        if (board[i][j] == compareWithValue) {
+      for (var j = 0; j < BOARDLENGTH; j ++) {
+        if (BOARD[i][j] == compareWithValue) {
           count = 0;
           currentCoordinate = null;
           break;
-        } else if (board[i][j] == value) {
+        } else if (BOARD[i][j] == value) {
           count ++;
         }
       }
 
       if (maxCount < count) {
         maxCount = count;
+        // finalCoordinate = currentCoordinate;
         finalCoordinate = currentCoordinate;
       }
     }
@@ -290,16 +427,16 @@ $(document).ready(function(){
     var maxCount = 0;
     var finalCoordinate;
 
-    for (var i = 0; i < boardLength; i ++) {
+    for (var i = 0; i < BOARDLENGTH; i ++) {
       var count = 0;
       var currentCoordinate = i;
 
-      for (var j = 0; j < boardLength; j ++) {
-        if (board[j][i] == compareWithValue) {
+      for (var j = 0; j < BOARDLENGTH; j ++) {
+        if (BOARD[j][i] == compareWithValue) {
           count = 0;
           currentCoordinate = null;
           break;
-        } else if (board[j][i] == value) {
+        } else if (BOARD[j][i] == value) {
           count ++;
         }
       }
@@ -322,11 +459,11 @@ $(document).ready(function(){
   function countAllLeftDiagonal(value, compareWithValue) {
     var count = 0;
 
-    for (var i = 0; i < boardLength; i ++) {
-      if (board[i][i] == compareWithValue) {
+    for (var i = 0; i < BOARDLENGTH; i ++) {
+      if (BOARD[i][i] == compareWithValue) {
         count = 0;
         break;
-      } else if (board[i][i] == value){
+      } else if (BOARD[i][i] == value){
         count ++;
       }
     }
@@ -344,11 +481,11 @@ $(document).ready(function(){
   function countAllRightDiagonal(value, compareWithValue){
     var count = 0;
 
-    for (var i = 0; i < boardLength; i ++) {
-      if(board[boardLength - i - 1][i] == compareWithValue) {
+    for (var i = 0; i < BOARDLENGTH; i ++) {
+      if(BOARD[BOARDLENGTH - i - 1][i] == compareWithValue) {
         count = 0;
         break;
-      } else if (board[boardLength - i - 1][i] == value) {
+      } else if (BOARD[BOARDLENGTH - i - 1][i] == value) {
         count ++;
       }
     }
@@ -362,10 +499,10 @@ $(document).ready(function(){
    * @param {value} value - the value (X or O) that has to be inserted into the cell
    */
   function insertIntoCell(id, value) {
-    board[id[0]][id[1]] = value;
+    BOARD[id[0]][id[1]] = value;
 
     // Delay in computer's move, so it will insert value a bit later than
-    if (value == computer) {
+    if (value == COMPUTER) {
       setTimeout(function() { document.getElementById(id).innerHTML = value; }, 500);
     } else {
       document.getElementById(id).innerHTML = value;
@@ -383,11 +520,11 @@ $(document).ready(function(){
   function checkWin(x, y, player) {
     if (checkRow(x) ||
         checkColumn(y) ||
-        checkLeftDiagonal() && board[0][0] == player ||
-        checkRightDiagonal() && board[boardLength - 1][0] == player) {
-        win = true;
+        checkLeftDiagonal() && BOARD[0][0] == player ||
+        checkRightDiagonal() && BOARD[BOARDLENGTH - 1][0] == player) {
+        WIN = true;
         alert(player + " wins!")
-     return win;
+     return WIN;
     }
      return false;
    }
@@ -400,12 +537,12 @@ $(document).ready(function(){
     * @return {boolean} returns true row has a win combination
     */
   function checkRow(x) {
-    if (board[x][0] == null) {
+    if (BOARD[x][0] == null) {
       return false;
     }
 
-    for (var i = 1; i < boardLength; i ++) {
-      if (board[x][0] != board[x][i]) {
+    for (var i = 1; i < BOARDLENGTH; i ++) {
+      if (BOARD[x][0] != BOARD[x][i]) {
         return false;
       }
     }
@@ -419,12 +556,12 @@ $(document).ready(function(){
    * @return {boolean} returns true column has a win combination
    */
   function checkColumn(y) {
-    if (board[0][y] == null) {
+    if (BOARD[0][y] == null) {
       return false;
     }
 
-    for (var i = 1; i < boardLength; i ++) {
-      if (board[0][y] != board[i][y]) {
+    for (var i = 1; i < BOARDLENGTH; i ++) {
+      if (BOARD[0][y] != BOARD[i][y]) {
         return false;
       }
     }
@@ -437,12 +574,12 @@ $(document).ready(function(){
    * @return {boolean} returns true left diagonal has a win combination
    */
   function checkLeftDiagonal(){
-    if (board[0][0] == null) {
+    if (BOARD[0][0] == null) {
       return false;
     }
 
-    for (var i = 1; i < boardLength; i ++) {
-      if (board[0][0] != board[i][i]) {
+    for (var i = 1; i < BOARDLENGTH; i ++) {
+      if (BOARD[0][0] != BOARD[i][i]) {
         return false;
       }
     }
@@ -455,12 +592,12 @@ $(document).ready(function(){
    * @return {boolean} returns true rigth diagonal has a win combination
    */
   function checkRightDiagonal() {
-    if (board[boardLength - 1][0] == null) {
+    if (BOARD[BOARDLENGTH - 1][0] == null) {
       return false;
     }
 
-    for (var i = 1; i < boardLength; i ++) {
-      if (board[boardLength - 1][0] != board[boardLength - i - 1][i]) {
+    for (var i = 1; i < BOARDLENGTH; i ++) {
+      if (BOARD[BOARDLENGTH - 1][0] != BOARD[BOARDLENGTH - i - 1][i]) {
         return false;
       }
     }
