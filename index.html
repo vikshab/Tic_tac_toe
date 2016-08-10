@@ -14,44 +14,39 @@
       <div class="row content">
         <!-- Game options and reset button -->
         <div class="col-sm-2 sidenav">
-          <button type="button" class="btn btn-danger" onClick="window.location.reload()">Reset</button>
+          <button type="button" class="btn btn-danger" id="reset">Reset</button>
+          <hr>
+          <p>Select your move</p>
           <div class="radio">
             <label><input type="radio" name="optradio" class="user_player" value="O">Choose O</label>
           </div>
           <div class="radio">
             <label><input type="radio" name="optradio" class="user_player" value="X">Choose X</label>
           </div>
+          <hr>
+          <p>Choose game board</p>
+          <div class="radio">
+            <label><input type="radio" name="optradio1" class="selected_board" value="board3x3">3x3</label>
+          </div>
+          <div class="radio">
+            <label><input type="radio" name="optradio1" class="selected_board" value="board4x4">4x4</label>
+          </div>
+          <div class="radio">
+            <label><input type="radio" name="optradio1" class="selected_board" value="board5x5">5x5</label>
+          </div>
+          <div class="radio">
+            <label><input type="radio" name="optradio1" class="selected_board" value="board6x6">6x6</label>
+          </div>
+          <!-- <button type="button" class="btn btn-primary" id="start">Start</button> -->
+
         </div>
 
-        <!-- Game board -->
         <div class="col-sm-8 text-left">
           <h1>TIC TAC TOE <small>Developed by Victoria Shabunia</small>
           </h1>
           <hr>
-          <div id="gameboard">
-            <div class="cells">
-              <div class="cell", id="00" value="false"></div>
-              <div class="cell", id="01" value="false"></div>
-              <div class="cell", id="02" value="false"></div>
-              <div class="cell", id="03" value="false"></div>
-
-              <div class="cell", id="10" value="false"></div>
-              <div class="cell", id="11" value="false"></div>
-              <div class="cell", id="12" value="false"></div>
-              <div class="cell", id="13" value="false"></div>
-
-              <div class="cell", id="20" value="false"></div>
-              <div class="cell", id="21" value="false"></div>
-              <div class="cell", id="22" value="false"></div>
-              <div class="cell", id="23" value="false"></div>
-
-              <div class="cell", id="30" value="false"></div>
-              <div class="cell", id="31" value="false"></div>
-              <div class="cell", id="32" value="false"></div>
-              <div class="cell", id="33" value="false"></div>
-            </div>
-            <!-- end of gameboard -->
-          </div>
+          <!-- Game board -->
+          <div class="game"></div>
           <!-- end of col-sm-8 text-left -->
         </div>
         <!-- end of row container -->
