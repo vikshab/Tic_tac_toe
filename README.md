@@ -2,7 +2,7 @@
 ### Game instruction:
 - Select the value of **X** or **O**
 - Select the size of the game board
-  the following options are available:
+  the following options are available:  
   - board 3x3
   - board 4x4
   - board 5x5
