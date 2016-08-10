@@ -2,15 +2,33 @@ html {
   font: normal normal 30px "Clear Sans", "Helvetica Neue", Arial, sans-serif;
 }
 
-#gameboard {
+.gameboard {
   background: #D8DAD6;
   border-radius: 0.1rem;
-  height: 12.4rem;
   margin: 1rem auto;
   position: relative;
   top: 5rem;
   left: 2.5rem;
+}
+
+#board3x3 {
+  height: 9.4rem;
+  width: 9.4rem;
+}
+
+#board4x4 {
+  height: 12.4rem;
   width: 12.4rem;
+}
+
+#board5x5 {
+  height: 15.6rem;
+  width: 15.6rem;
+}
+
+#board6x6 {
+  height: 18.7rem;
+  width: 18.7rem;
 }
 
 .cell {
