@@ -1,5 +1,4 @@
 $(document).ready(function(){
-  var game;
   var board = [[null, null, null, null], [null, null, null, null], [null, null, null, null], [null, null, null, null]];
   var boardLength = board.length;
   var cross = "X";
@@ -7,10 +6,8 @@ $(document).ready(function(){
   var move = 1;
   var win = false;
   var noWin = false;
-  var player;
-  var computer;
+  var player, computer;
 
-  // Set user player to selected value (X or O)
   $(".user_player").click(function() {
     player = $(this).attr("value");
     if (player == cross) {
@@ -21,7 +18,6 @@ $(document).ready(function(){
   });
 
   $(".cell").click(function() {
-
     if (win || noWin) {
       return;
     }
@@ -39,7 +35,7 @@ $(document).ready(function(){
     }
 
     if (move % 2 == 0 && move > 3) {
-      strategicComputersMove(row, column, board, boardLength)
+      strategicComputersMove(row, column, board, boardLength);
     }
 
     checkLooseLooseSituation();
@@ -49,7 +45,7 @@ $(document).ready(function(){
     if (board[row][column] == null) {
       insertIntoCell(id, player);
       if(move >= boardLength){
-        checkWin(board, row, column, boardLength, player)
+        checkWin(board, row, column, boardLength, player);
       }
       move ++;
     }
@@ -93,47 +89,46 @@ $(document).ready(function(){
   }
 
   function selectCoordinates(x, y, board, boardLength) {
-    var countXRow = countNumberInRow1(cross, zero).count;
-    var countXColumn = countNumberInColumn1(cross, zero).count;
-    var leftDiagonalX = countAllLeftDiagonal1(cross, zero);
-    var rightDiagonalX = countAllRightDiagonal1(cross, zero);
+    var countXRow = countNumberInRow(cross, zero).count;
+    var countXColumn = countNumberInColumn(cross, zero).count;
+    var leftDiagonalX = countAllLeftDiagonal(cross, zero);
+    var rightDiagonalX = countAllRightDiagonal(cross, zero);
 
-    var countZeroRow = countNumberInRow1(zero, cross).count;
-    var countZeroColumn = countNumberInColumn1(zero, cross).count;
-    var leftDiagonalZero = countAllLeftDiagonal1(zero, cross);
-    var rightDiagonalZero = countAllRightDiagonal1(zero, cross);
+    var countZeroRow = countNumberInRow(zero, cross).count;
+    var countZeroColumn = countNumberInColumn(zero, cross).count;
+    var leftDiagonalZero = countAllLeftDiagonal(zero, cross);
+    var rightDiagonalZero = countAllRightDiagonal(zero, cross);
 
     var arrayX = [countXRow, countXColumn, leftDiagonalX, rightDiagonalX]
     var arrayZero = [countZeroRow, countZeroColumn, leftDiagonalZero, rightDiagonalZero]
     var largestCountX = Math.max.apply(Math, arrayX);
     var largestCountZero = Math.max.apply(Math, arrayZero);
 
-    console.log("Row X  " + countXRow);
-    console.log("Column X  " + countXColumn);
-    console.log("leftDiagonal X  " + leftDiagonalX)
-    console.log("rightDiagonal X  " + rightDiagonalX)
-
-    console.log("Row O  " + countZeroRow)
-    console.log("Column O  " + countZeroColumn);
-    console.log("leftDiagonal O  " + leftDiagonalZero)
-    console.log("rightDiagonal O  " + rightDiagonalZero)
+    // console.log("Row X  " + countXRow);
+    // console.log("Column X  " + countXColumn);
+    // console.log("leftDiagonal X  " + leftDiagonalX)
+    // console.log("rightDiagonal X  " + rightDiagonalX)
+    //
+    // console.log("Row O  " + countZeroRow)
+    // console.log("Column O  " + countZeroColumn);
+    // console.log("leftDiagonal O  " + leftDiagonalZero)
+    // console.log("rightDiagonal O  " + rightDiagonalZero)
 
     if (largestCountX >= largestCountZero && largestCountX != 0) {
       var value = cross;
-      var compareWithValue = zero
+      var compareWithValue = zero;
       id = generateCoordinates(largestCountX, arrayX, value, compareWithValue);
     } else if (largestCountZero > largestCountX && largestCountZero != 0) {
       var value = zero;
-      var compareWithValue = cross
+      var compareWithValue = cross;
       id = generateCoordinates(largestCountZero, arrayZero, value, compareWithValue);
     } else if (largestCountX == 0 && largestCountZero == 0 &&
-              (!isEmpty(countNumberInRow(null)) &&
-              !isEmpty(countNumberInColumn(null)) &&
-              !isEmptyDiagonal(countAllLeftDiagonal(null)) &&
-              !isEmptyDiagonal(countAllRightDiagonal(null)))) {
+              !isEmpty(countNumberInRow(null, cross).count) &&
+              !isEmpty(countNumberInColumn(null, cross).count) &&
+              !isEmpty(countAllLeftDiagonal(null, cross)) &&
+              !isEmpty(countAllRightDiagonal(null, cross))) {
       id = null;
     } else {
-      console.log('got here')
       row = generateRandomCoordinate(boardLength - 1);
       column = generateRandomCoordinate(boardLength - 1);
 
@@ -148,52 +143,24 @@ $(document).ready(function(){
     return id;
   }
 
-  function isEmpty(array) {
-    for (var i = 0; i < array.length; i ++) {
-      if(array[i] == boardLength) {
-        return true;
-      }
-    }
-    return false
+  function isEmpty(value) {
+    return value == boardLength;
   }
 
-  function isEmptyDiagonal(diagonal) {
-    return diagonal == boardLength;
-  }
-
-  function hasEmptyInRowOrColumn(arrayOfEmptyPositionsCount) {
-    for (var i = 0; i < boardLength; i ++) {
-      if (arrayOfEmptyPositionsCount[i] >= 1) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  function hasEmptyInDiagonal(countNullOnDiagonal) {
-    if (countNullOnDiagonal >= 1) {
-      return true;
-    }
-    return false;
-  }
-
-  // Generates coordinates based on either X positions to prevent user from win
-  // or based on O positions in order to win
   function generateCoordinates(largestCount, array, value, compareWithValue){
     var x, y;
 
     if (largestCount.toString() == array[0].toString()) {
-      x = countNumberInRow1(value, compareWithValue).coordinate;
+      x = countNumberInRow(value, compareWithValue).coordinate;
       y = generateRandomCoordinate(boardLength - 1);
       while (board[x][y] != null) {
         y = generateRandomCoordinate(boardLength - 1);
       }
     } else if (largestCount.toString() == array[1].toString()) {
-      y = countNumberInColumn1(value, compareWithValue).coordinate;;
+      y = countNumberInColumn(value, compareWithValue).coordinate;;
       x = generateRandomCoordinate(boardLength - 1);
 
       while (board[x][y] != null) {
-        // console.log("loop 2")
         x = generateRandomCoordinate(boardLength - 1);
       }
     } else if(largestCount.toString() == array[2].toString()){
@@ -213,25 +180,7 @@ $(document).ready(function(){
       x = boardLength - i - 1;
       y = i;
     }
-    id = x.toString() + y.toString()
-    console.log(id)
-    return id;
-  }
-
-  function countNumberInRow(value) {
-    var count = 0;
-    var result = [];
-
-    for (var i = 0; i < boardLength; i ++) {
-      for (var j = 0; j < boardLength; j ++) {
-        if (board[i][j] == value) {
-          count ++;
-        }
-      }
-      result.push(count)
-      count = 0;
-    }
-    return result;
+    return id = x.toString() + y.toString();
   }
 
   function Coordinates(count, coordinate){
@@ -239,7 +188,7 @@ $(document).ready(function(){
     this.coordinate = coordinate;
   }
 
-  function countNumberInRow1(value, compareWithValue) {
+  function countNumberInRow(value, compareWithValue) {
     var maxCount = 0;
     var finalCoordinate;
 
@@ -265,7 +214,7 @@ $(document).ready(function(){
     return new Coordinates(maxCount, finalCoordinate);
   }
 
-  function countNumberInColumn1(value, compareWithValue) {
+  function countNumberInColumn(value, compareWithValue) {
     var maxCount = 0;
     var finalCoordinate;
 
@@ -290,23 +239,7 @@ $(document).ready(function(){
     return new Coordinates(maxCount, finalCoordinate);
   }
 
-  function countNumberInColumn(value) {
-    var count = 0;
-    var result = [];
-
-    for (var i = 0; i < boardLength; i ++) {
-      for (var j = 0; j < boardLength; j ++){
-        if (board[j][i] == value) {
-          count ++;
-        }
-      }
-      result.push(count)
-      count = 0;
-    }
-    return result;
-  }
-
-  function countAllLeftDiagonal1(value, compareWithValue) {
+  function countAllLeftDiagonal(value, compareWithValue) {
     var count = 0;
 
     for (var i = 0; i < boardLength; i ++) {
@@ -320,19 +253,7 @@ $(document).ready(function(){
     return count;
   }
 
-
-  function countAllLeftDiagonal(value) {
-    var count = 0;
-
-    for (var i = 0; i < boardLength; i ++) {
-      if (board[i][i] == value) {
-        count ++;
-      }
-    }
-    return count;
-  }
-
-  function countAllRightDiagonal1(value, compareWithValue){
+  function countAllRightDiagonal(value, compareWithValue){
     var count = 0;
 
     for (var i = 0; i < boardLength; i ++) {
@@ -340,17 +261,6 @@ $(document).ready(function(){
         count = 0;
         break;
       } else if (board[boardLength - i - 1][i] == value) {
-        count ++;
-      }
-    }
-    return count;
-  }
-
-  function countAllRightDiagonal(value){
-    var count = 0;
-
-    for (var i = 0; i < boardLength; i ++) {
-      if(board[boardLength - i - 1][i] == value) {
         count ++;
       }
     }
