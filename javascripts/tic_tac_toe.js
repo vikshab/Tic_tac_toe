@@ -10,11 +10,7 @@ $(document).ready(function(){
 
   $(".user_player").click(function() {
     player = $(this).attr("value");
-    if (player == cross) {
-      computer = zero;
-    } else {
-      computer = cross;
-    }
+    computer = player == cross ? zero : cross;
   });
 
   $(".cell").click(function() {
@@ -27,21 +23,21 @@ $(document).ready(function(){
     var column = id[1];
 
     if (move == 1 || move % 2 != 0) {
-      moveUser(row, column, id);
+      userGoes(row, column, id);
     }
 
     if (move == 2) {
-      firstRandomComputersMove();
+      computerGoesFirstTimeRandomly();
     }
 
     if (move % 2 == 0 && move > 3) {
-      strategicComputersMove(row, column, board, boardLength);
+      computerThinksBeforeGo(row, column, board, boardLength);
     }
 
     checkLooseLooseSituation();
   });
 
-  function moveUser(row, column, id) {
+  function userGoes(row, column, id) {
     if (board[row][column] == null) {
       insertIntoCell(id, player);
       if(move >= boardLength){
@@ -51,21 +47,13 @@ $(document).ready(function(){
     }
   }
 
-  function firstRandomComputersMove() {
-    var row = generateRandomCoordinate(boardLength - 1);
-    var column = generateRandomCoordinate(boardLength - 1);
-
-    while (board[row][column] != null) {
-      row = generateRandomCoordinate(boardLength - 1);
-      column = generateRandomCoordinate(boardLength - 1);
-    }
-
-    id = row.toString() + column.toString();
+  function computerGoesFirstTimeRandomly() {
+    var id = generateRandomCoordinates();
     insertIntoCell(id, computer);
     move ++;
   }
 
-  function strategicComputersMove(row, column, board, boardLength) {
+  function computerThinksBeforeGo(row, column, board, boardLength) {
     var id = selectCoordinates(row, column, board, boardLength);
     if (id != null) {
       insertIntoCell(id, computer);
@@ -84,8 +72,23 @@ $(document).ready(function(){
     }
   }
 
-  function generateRandomCoordinate(boardLength) {
-    return Math.round(Math.random()* boardLength);
+  function generateRandomNumber() {
+    var max = boardLength - 1;
+    var min = 0;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function generateRandomCoordinates() {
+    var row = generateRandomNumber();
+    var column = generateRandomNumber();
+
+    while (board[row][column] != null) {
+      row = generateRandomNumber();
+      column = generateRandomNumber();
+    }
+
+    var id = row.toString() + column.toString();
+    return id;
   }
 
   function selectCoordinates(x, y, board, boardLength) {
@@ -104,16 +107,6 @@ $(document).ready(function(){
     var largestCountX = Math.max.apply(Math, arrayX);
     var largestCountZero = Math.max.apply(Math, arrayZero);
 
-    // console.log("Row X  " + countXRow);
-    // console.log("Column X  " + countXColumn);
-    // console.log("leftDiagonal X  " + leftDiagonalX)
-    // console.log("rightDiagonal X  " + rightDiagonalX)
-    //
-    // console.log("Row O  " + countZeroRow)
-    // console.log("Column O  " + countZeroColumn);
-    // console.log("leftDiagonal O  " + leftDiagonalZero)
-    // console.log("rightDiagonal O  " + rightDiagonalZero)
-
     if (largestCountX >= largestCountZero && largestCountX != 0) {
       var value = cross;
       var compareWithValue = zero;
@@ -129,15 +122,7 @@ $(document).ready(function(){
               !isEmpty(countAllRightDiagonal(null, cross))) {
       id = null;
     } else {
-      row = generateRandomCoordinate(boardLength - 1);
-      column = generateRandomCoordinate(boardLength - 1);
-
-      while (board[row][column] != null) {
-        row = generateRandomCoordinate(boardLength - 1);
-        column = generateRandomCoordinate(boardLength - 1);
-      }
-
-      id = row.toString()+ column.toString();
+      id = generateRandomCoordinates();
     }
 
     return id;
@@ -152,30 +137,30 @@ $(document).ready(function(){
 
     if (largestCount.toString() == array[0].toString()) {
       x = countNumberInRow(value, compareWithValue).coordinate;
-      y = generateRandomCoordinate(boardLength - 1);
+      y = generateRandomNumber();
       while (board[x][y] != null) {
-        y = generateRandomCoordinate(boardLength - 1);
+        y = generateRandomNumber();
       }
     } else if (largestCount.toString() == array[1].toString()) {
       y = countNumberInColumn(value, compareWithValue).coordinate;;
-      x = generateRandomCoordinate(boardLength - 1);
+      x = generateRandomNumber();
 
       while (board[x][y] != null) {
-        x = generateRandomCoordinate(boardLength - 1);
+        x = generateRandomNumber();
       }
     } else if(largestCount.toString() == array[2].toString()){
-      i = generateRandomCoordinate(boardLength - 1);
+      i = generateRandomNumber();
 
       while (board[i][i] != null) {
-        i = generateRandomCoordinate(boardLength - 1);
+        i = generateRandomNumber();
       }
       x = i;
       y = i;
     } else if (largestCount.toString() == array[3].toString()) {
-      i = generateRandomCoordinate(boardLength - 1);
+      i = generateRandomNumber();
 
       while (board[boardLength - i - 1][i]!= null) {
-        i = generateRandomCoordinate(boardLength - 1);
+        i = generateRandomNumber();
       }
       x = boardLength - i - 1;
       y = i;
