@@ -19,7 +19,7 @@ $(document).ready(function(){
                   [null, null, null, null, null, null],
                   [null, null, null, null, null, null]];
   var BOARD;
-  var SELECTEDBOARD = null;
+  var SELECTEDBOARD;
   var BOARDLENGTH;
   var CROSS = "X";
   var ZERO = "O";
@@ -27,53 +27,59 @@ $(document).ready(function(){
   var WIN, NOWIN;
   var USER, COMPUTER;
 
+  /**
+   * @summary Set up the value.
+   */
   $(".user_player").click(function() {
     USER = $(this).attr("value");
-    COMPUTER = USER == CROSS ? ZERO : CROSS;
-    if (USER && BOARD) {
-      cleanBoard();
-    }
-    startGame()
+    startGame();
   });
 
+  /**
+   * @summary Set up the board size.
+   */
   $(".selected_board").click(function() {
     SELECTEDBOARD = $(this).attr("value");
-    if (USER && BOARD) {
-      cleanBoard();
-    }
-    startGame()
+    startGame();
   });
 
+  /**
+   * @summary Reset existing game.
+   */
   $("#reset").click(function() {
-    $(".cell").empty()
-    cleanBoard();
-    // location.reload();
-    startGame()
+    $(".cell").empty();
+    startGame();
   });
 
-  // $("#start").click(function() {
-  //   var boardGameExists = $(".game").children()[0] != null ? true : false;
-  //   if (boardGameExists) {
-  //     $(".game").empty();
-  //   }
-  //   start();
-  // });
-
+  /**
+   * @summary Set up the game configuration.
+   */
   function startGame() {
+
+    // Cells need to be emptied every time user either switches to a new board size
+    // or reset existing game (so that array's values were null)
+    if (USER && BOARD) {
+      emptyCells();
+    }
+
+    // When user selects value and board size (or just switching between different board sizes)
+    // We want to draw a new board
     if (USER && SELECTEDBOARD) {
+
+      // before a new board will be drawn the old one must be deleted (if it exists)
       var boardGameExists = $(".game").children()[0] != null ? true : false;
       if (boardGameExists) {
         $(".game").empty();
-        cleanBoard();
       }
-      WIN = false;
-      NOWIN = false;
-      MOVE = 1;
-      start();
+      drawBoard();
+      setUpValues();
     }
   }
 
-  function cleanBoard() {
+  /**
+   * @summary Empties cells of the game board (rolls back values of array to null).
+   */
+  function emptyCells() {
     for (var i = 0; i < BOARD.length; i ++) {
       for (var j = 0; j < BOARD.length; j ++) {
         BOARD[i][j] = null;
@@ -81,35 +87,30 @@ $(document).ready(function(){
     }
   }
 
-  function start() {
+  /**
+   * @summary Draws the game board.
+   */
+  function drawBoard() {
+
+    // Set up the board size
     switch (SELECTEDBOARD) {
-      case "board3x3":
-      BOARD = BOARD3x3;
-      break;
-      case "board4x4":
-      BOARD = BOARD4x4;
-      break;
-      case "board5x5":
-      BOARD = BOARD5x5;
-      break;
-      case "board6x6":
-      BOARD = BOARD6x6;
-      break;
-      default :
-      null;
-    }
-    if (BOARD == null) {
-      alert("Select board");
-      return;
+    case "board3x3":
+          BOARD = BOARD3x3;
+          break;
+    case "board4x4":
+          BOARD = BOARD4x4;
+          break;
+    case "board5x5":
+          BOARD = BOARD5x5;
+          break;
+    case "board6x6":
+          BOARD = BOARD6x6;
+          break;
+    default :
+          null;
     }
 
-    if (USER == null) {
-      alert("Select value, please");
-      return;
-    }
-
-    BOARDLENGTH = BOARD.length;
-
+    // Append 'gameboard' div to 'game' div
     var gameLocation = $(".game");
     var gameboard = document.createElement('div');
     var cells = document.createElement('div');
@@ -117,9 +118,11 @@ $(document).ready(function(){
     gameboard.id = SELECTEDBOARD;
     cells.className = "cells";
 
+    // Append 'cells' div to "gameboard" div
     gameLocation[0].appendChild(gameboard);
     gameboard.appendChild(cells);
 
+    // Append 'cell' div to 'cells' div
     for (var i = 0; i < BOARD.length; i ++) {
       for (var j = 0; j < BOARD.length; j ++) {
         var cell = document.createElement('div');
@@ -132,10 +135,24 @@ $(document).ready(function(){
     }
   }
 
+  /**
+   * @summary Sets up the Global variables for the game,
+   * we need to set them up every time user changes game configuration.
+   */
+  function setUpValues() {
+    BOARDLENGTH = BOARD.length;
+    WIN = false;
+    NOWIN = false;
+    MOVE = 1;
+    COMPUTER = USER == CROSS ? ZERO : CROSS;
+  }
+
+  /**
+   * @summary Play function triggers every time user clicks on the cell.
+   *
+   * @param {object} $that Div(cell) that user clicks on.
+   */
   function play(that) {
-    // console.log("got here")
-    // console.log(that)
-    // console.log(that.getAttribute("id"))
 
     if (WIN || NOWIN) {
       return;
@@ -159,9 +176,9 @@ $(document).ready(function(){
   }
 
   /**
-   * Insert user's value into the cell and check if there is a win
+   * @summary Insert user's value into the cell and check if there is a win.
    *
-   * @param {id} id - cell id
+   * @param {string} $id Cell's id.
 
    */
   function userGoes(id) {
@@ -180,10 +197,7 @@ $(document).ready(function(){
   }
 
   /**
-   * Insert computer's value into the cell (just first computer's move)
-   *
-   * @param {id} id - cell id
-
+   * @summary Insert computer's value into the cell (just first computer's move).
    */
   function computerGoesFirstTimeRandomly() {
     var id = generateRandomCoordinates();
@@ -195,9 +209,9 @@ $(document).ready(function(){
   }
 
   /**
-   * Insert computer's value into the cell and check if there is a win
+   * @summary Insert computer's value into the cell and check if there is a win.
    *
-   * @param {id} id - cell id, that user clicks on
+   * @param {string} $id Cell's id, that user clicks on.
    */
   function computerThinksBeforeGo(id) {
     var id = selectCoordinates(id[0], id[1]);
@@ -212,7 +226,7 @@ $(document).ready(function(){
   }
 
   /**
-   * Check if there is no-win situation
+   * @summary Check if there is no-win situation.
    * @return nothing, just alert
    */
   function checkLooseLooseSituation() {
@@ -223,9 +237,9 @@ $(document).ready(function(){
   }
 
   /**
-   * Get a random number from 0 inclusively to BOARDLENGTH-1 inclusively
+   * @summary Get a random number from 0 inclusively to BOARDLENGTH-1 inclusively.
    *
-   * @return {integer} a random integer number
+   * @return {integer} Random number
    */
   function generateRandomNumber() {
     var max = BOARDLENGTH - 1;
@@ -234,9 +248,9 @@ $(document).ready(function(){
   }
 
   /**
-   * Generate random coordinates xy
+   * @summary Generate random coordinates xy.
    *
-   * @return {string} a random string coordinates "xy"
+   * @return {string} Random coordinates "xy"
    */
   function generateRandomCoordinates() {
     var row = generateRandomNumber();
@@ -252,11 +266,11 @@ $(document).ready(function(){
   }
 
   /**
-   * Generate coordinates based on the positions of X or O
+   * @summary Generate coordinates based on the positions of X or O.
    *
-   * @param {x} x - coordinate x of value (X or O)
-   * @param {y} y - coordinate y of value (X or O)
-   * @return {string} a random string coordinates "xy"
+   * @param {string} $x Coordinate x of value.
+   * @param {string} $y Coordinate y of value.
+   * @return {string} Random coordinates "xy"
    */
   function selectCoordinates(x, y) {
     var countXRow = countNumberInRow(CROSS, ZERO).count;
@@ -268,16 +282,6 @@ $(document).ready(function(){
     var countZeroColumn = countNumberInColumn(ZERO, CROSS).count;
     var leftDiagonalZero = countAllLeftDiagonal(ZERO, CROSS);
     var rightDiagonalZero = countAllRightDiagonal(ZERO, CROSS);
-
-    console.log("countXRow " + countXRow)
-    console.log("countXColumn " + countXColumn)
-    console.log("leftDiagonalX " + leftDiagonalX)
-    console.log("rightDiagonalX" + rightDiagonalX)
-
-    console.log("countZeroRow " + countZeroRow)
-    console.log("countZeroColumn " + countZeroColumn)
-    console.log("leftDiagonalZero " + leftDiagonalZero)
-    console.log("rightDiagonalZero" + rightDiagonalZero)
 
     var arrayX = [countXRow, countXColumn, leftDiagonalX, rightDiagonalX]
     var arrayZero = [countZeroRow, countZeroColumn, leftDiagonalZero, rightDiagonalZero]
@@ -302,33 +306,33 @@ $(document).ready(function(){
     } else {
       id = generateRandomCoordinates();
     }
-
     return id;
   }
 
   /**
-   * Check if row/column/diagonals is empty
+   * @summary Check if row/column/diagonals is empty.
    *
-   * @param {value} value - count of NUll by row||column||diagonal
-   * @return {bolean} true if board has empty row||column||diagonal
+   * @param {integer} $value Count of NUll by row||column||diagonal.
+   * @return {bolean} True if board has empty row||column||diagonal.
    */
   function isEmpty(value) {
     return value == BOARDLENGTH;
   }
 
   /**
-   * Helper method for selectCoordinates(x, y) function
+   * @summary Helper method for selectCoordinates(x, y) function.
    *
-   * @param {largestCount} largestCount - the largest count of X or O on the board
-   * @param {array} array - array of X or O counts on the board
-   * @param {value} value - value on X or O (needed to internal funcion countNumberInRow())
-   * @param {compareWithValue} compareWithValue - value of O or X (the opposite to the above value)
-   * @return {string} random string coordinates "xy"
+   * @param {integer} $largestCount The largest count of X or O on the board.
+   * @param {object} $array Array of X or O counts on the board.
+   * @param {string} $value Value on X or O (needed to internal funcion countNumberInRow()).
+   * @param {string} $compareWithValue Value of O or X (the opposite to the above value).
+   * @return {string} Random string coordinates "xy".
    */
   function generateCoordinates(largestCount, array, value, compareWithValue){
     var x, y;
 
     if (largestCount.toString() == array[0].toString()) {
+
       // Largest count in the row
       // find row and generate random column;
       x = countNumberInRow(value, compareWithValue).coordinate;
@@ -337,6 +341,7 @@ $(document).ready(function(){
         y = generateRandomNumber();
       }
     } else if (largestCount.toString() == array[1].toString()) {
+
       // Largest count in the column
       // find column and generate random row;
       y = countNumberInColumn(value, compareWithValue).coordinate;;
@@ -346,6 +351,7 @@ $(document).ready(function(){
         x = generateRandomNumber();
       }
     } else if(largestCount.toString() == array[2].toString()){
+
       // Largest count in the left diagonal
       // generate random coordinate in the left diagonal;
       i = generateRandomNumber();
@@ -356,6 +362,7 @@ $(document).ready(function(){
       x = i;
       y = i;
     } else if (largestCount.toString() == array[3].toString()) {
+
       // Largest count in the right diagonal
       // generate random coordinate in the right diagonal;
       i = generateRandomNumber();
@@ -370,10 +377,10 @@ $(document).ready(function(){
   }
 
   /**
-   * Helper method for countNumberInRow() and countNumberInColumn() functions
+   * @summary Helper method for countNumberInRow() and countNumberInColumn() functions.
    *
-   * @param {count} count - the largest count of X or O on the board
-   * @param {coordinate} coordinate - coordinate of the largest count of X or O
+   * @param {integer} $count The largest count of X or O on the board.
+   * @param {integer} $coordinate Coordinate of the largest count of X or O.
    */
   function Coordinates(count, coordinate){
     this.count = count;
@@ -381,12 +388,12 @@ $(document).ready(function(){
   }
 
   /**
-   * Find the largest count of X or O by rows
+   * @summary Find the largest count of X or O by rows.
    *
-   * @param {value} value - the value (X or O) that need to be counted on rows
-   * @param {compareWithValue} compareWithValue - the opposite (O or X) to the above value
-   * @return {object} object that contains largest count of the value and its row number
-   * if row contains both values - count set to 0 and coordinate to null
+   * @param {string} $value The value (X or O) that need to be counted on rows.
+   * @param {string} $compareWithValue The opposite (O or X) to the above value.
+   * @return {object} Object that contains largest count of the value and its row number
+   * if row contains both values - count set to 0 and coordinate to null.
    */
   function countNumberInRow(value, compareWithValue) {
     var maxCount = 0;
@@ -408,7 +415,6 @@ $(document).ready(function(){
 
       if (maxCount < count) {
         maxCount = count;
-        // finalCoordinate = currentCoordinate;
         finalCoordinate = currentCoordinate;
       }
     }
@@ -416,12 +422,12 @@ $(document).ready(function(){
   }
 
   /**
-   * Find the largest count of X or O by columns
+   * @summary Find the largest count of X or O by columns.
    *
-   * @param {value} value - the value (X or O) that need to be counted on the columns
-   * @param {compareWithValue} compareWithValue - the opposite (O or X) to the above value
+   * @param {string} $value The value (X or O) that need to be counted on the columns.
+   * @param {string} $compareWithValue The opposite (O or X) to the above value.
    * @return {object} object that contains largest count of the value and its column number
-   * if column contains both values - count set to 0 and coordinate to null
+   * if column contains both values - count set to 0 and coordinate to null.
    */
   function countNumberInColumn(value, compareWithValue) {
     var maxCount = 0;
@@ -449,12 +455,12 @@ $(document).ready(function(){
   }
 
   /**
-   * Find the largest count of X or O on the left diagonal
+   * @summary Find the largest count of X or O on the left diagonal.
    *
-   * @param {value} value - the value (X or O) that need to be counted on the diagonal
-   * @param {compareWithValue} compareWithValue - the opposite (O or X) to the above value
-   * @return {integer} integer - count of X or O on the left diagonal, if diagonal contains
-   * both values - returns 0
+   * @param {string} $value The value (X or O) that need to be counted on the diagonal.
+   * @param {string} $compareWithValue The opposite (O or X) to the above value.
+   * @return {integer} Count of X or O on the left diagonal, if diagonal contains
+   * both values - returns 0.
    */
   function countAllLeftDiagonal(value, compareWithValue) {
     var count = 0;
@@ -471,12 +477,12 @@ $(document).ready(function(){
   }
 
   /**
-   * Find the largest count of X or O on the right diagonal
+   * @summary Find the largest count of X or O on the right diagonal.
    *
-   * @param {value} value - the value (X or O) that need to be counted on the diagonal
-   * @param {compareWithValue} compareWithValue - the opposite (O or X) to the above value
-   * @return {integer} integer - count of X or O on the right diagonal, if diagonal contains
-   * both values - returns 0
+   * @param {string} $value The value (X or O) that need to be counted on the diagonal.
+   * @param {string} $compareWithValue The opposite (O or X) to the above value.
+   * @return {integer} Count of X or O on the right diagonal, if diagonal contains
+   * both values - returns 0.
    */
   function countAllRightDiagonal(value, compareWithValue){
     var count = 0;
@@ -493,10 +499,10 @@ $(document).ready(function(){
   }
 
   /**
-   * Insert value (X or O) in a specific cell on the board
+   * @summary Insert value (X or O) in a specific cell on the board.
    *
-   * @param {id} id - cell's id
-   * @param {value} value - the value (X or O) that has to be inserted into the cell
+   * @param {string} $id Cell's id.
+   * @param {string} $value The value (X or O) that has to be inserted into the cell.
    */
   function insertIntoCell(id, value) {
     BOARD[id[0]][id[1]] = value;
@@ -510,12 +516,12 @@ $(document).ready(function(){
   }
 
   /**
-   * Check win for the value of X or O
+   * @summary Check win for the value of X or O.
    *
-   * @param {x} x - coordinate x on the board that user clicks on
-   * @param {y} y - coordinate y on the board that user clicks on
-   * @param {player} player - value (X or O)
-   * @return {boolean} returns true if there is a win
+   * @param {string} $x Coordinate x on the board that user clicks on.
+   * @param {string} $y Coordinate y on the board that user clicks on.
+   * @param {string} $player User's or Computer's value.
+   * @return {boolean} True if there is a win on the board.
    */
   function checkWin(x, y, player) {
     if (checkRow(x) ||
@@ -531,10 +537,10 @@ $(document).ready(function(){
 
 
    /**
-    * Check win for the value of X or O on the row
+    * @summary Check win for the value of X or O on the row.
     *
-    * @param {x} x - coordinate x on the board that user clicks on
-    * @return {boolean} returns true row has a win combination
+    * @param {string} $x Coordinate x on the board that user clicks on.
+    * @return {boolean} True if row has a win combination.
     */
   function checkRow(x) {
     if (BOARD[x][0] == null) {
@@ -550,10 +556,10 @@ $(document).ready(function(){
   }
 
   /**
-   * Check win for the value of X or O on the column
+   * @summary Check win for the value of X or O on the column.
    *
-   * @param {y} y - coordinate y on the board that user clicks on
-   * @return {boolean} returns true column has a win combination
+   * @param {string} y Coordinate y on the board that user clicks on.
+   * @return {boolean} True if column has a win combination.
    */
   function checkColumn(y) {
     if (BOARD[0][y] == null) {
@@ -569,9 +575,9 @@ $(document).ready(function(){
   }
 
   /**
-   * Check win for the value of X or O on the left diagonal
+   * @summary Check win for the value of X or O on the left diagonal.
    *
-   * @return {boolean} returns true left diagonal has a win combination
+   * @return {boolean} True is left diagonal has a win combination.
    */
   function checkLeftDiagonal(){
     if (BOARD[0][0] == null) {
@@ -587,9 +593,9 @@ $(document).ready(function(){
   }
 
   /**
-   * Check win for the value of X or O on the rigth diagonal
+   * @summary Check win for the value of X or O on the rigth diagonal.
    *
-   * @return {boolean} returns true rigth diagonal has a win combination
+   * @return {boolean} True if rigth diagonal has a win combination.
    */
   function checkRightDiagonal() {
     if (BOARD[BOARDLENGTH - 1][0] == null) {
