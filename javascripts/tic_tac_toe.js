@@ -130,85 +130,47 @@ $(document).ready(function(){
   }
 
   function selectCoordinates(x, y, board, boardLength) {
-    // Count X by rows, columns and diagonals
-    // rowX is an array of counts per row, where index represents row number
-    var rowX = countNumberInRow(cross);
+    var countXRow = countNumberInRow1(cross, zero).count;
+    var countXColumn = countNumberInColumn1(cross, zero).count;
+    var leftDiagonalX = countAllLeftDiagonal1(cross, zero);
+    var rightDiagonalX = countAllRightDiagonal1(cross, zero);
 
-    // columnX is an array of counts per column, where index represents column number
-    var columnX = countNumberInColumn(cross);
+    var countZeroRow = countNumberInRow1(zero, cross).count;
+    var countZeroColumn = countNumberInColumn1(zero, cross).count;
+    var leftDiagonalZero = countAllLeftDiagonal1(zero, cross);
+    var rightDiagonalZero = countAllRightDiagonal1(zero, cross);
 
-    // leftDiagonalX and rightDiagonalX is a number that represents count of X
-    // on left and right diagonals respectevely
-    var leftDiagonalX = countAllLeftDiagonal(cross);
-    var rightDiagonalX = countAllRightDiagonal(cross);
-
-    // Find number of all O's on board (rows, columns and diagonals)
-    var rowZero = countNumberInRow(zero);
-    var columnZero = countNumberInColumn(zero);
-    var leftDiagonalZero = countAllLeftDiagonal(zero);
-    var rightDiagonalZero = countAllRightDiagonal(zero);
-
-
-    // Update number of "X" depends on "O" positions on board
-    // Let's say we have 2 "X" and 1 "O" on the 1st row, then
-    // we can set count of "X" and "O" to 0, none of them can win on that row.
-    var row = positionsCloseToWinRowAndColumn(rowX, rowZero);
-    var column = positionsCloseToWinRowAndColumn(columnX, columnZero);
-    var leftDiagonal = positionsCloseToWinDiagonal(leftDiagonalX, leftDiagonalZero);
-    var rightDiagonal =  positionsCloseToWinDiagonal(rightDiagonalX, rightDiagonalZero);
-
-    rowX = row[0];
-    columnX = column[0];
-    leftDiagonalX = leftDiagonal[0];
-    rightDiagonalX = rightDiagonal[0];
-
-    rowZero = row[1];
-    columnZero = column[1];
-    leftDiagonalZero = leftDiagonal[1];
-    rightDiagonalZero = rightDiagonal[1];
-
-    // Find the closiest to win position of X
-    var rowXmax = Math.max.apply(Math, rowX);
-    var columnXmax = Math.max.apply(Math, columnX);
-    var arrayX = [rowXmax, columnXmax, leftDiagonalX, rightDiagonalX]
+    var arrayX = [countXRow, countXColumn, leftDiagonalX, rightDiagonalX]
+    var arrayZero = [countZeroRow, countZeroColumn, leftDiagonalZero, rightDiagonalZero]
     var largestCountX = Math.max.apply(Math, arrayX);
-    console.log("rowXmax--- " + rowXmax)
-    console.log("columnXmax--- " + columnXmax)
-    console.log("leftDiagonalX--- " + leftDiagonalX)
-    console.log("rightDiagonalX--- " + rightDiagonalX)
-
-    // Find the closiest to win position of O
-    var rowZeroMax = Math.max.apply(Math, rowZero);
-    var columnZeroMax = Math.max.apply(Math, columnZero);
-    var arrayZero = [rowZeroMax, columnZeroMax, leftDiagonalZero, rightDiagonalZero]
     var largestCountZero = Math.max.apply(Math, arrayZero);
 
-    console.log("rowOmax--- " + rowZeroMax)
-    console.log("columnOmax--- " + columnZeroMax)
-    console.log("leftDiagonalO--- " + leftDiagonalZero)
-    console.log("rightDiagonalO--- " + rightDiagonalZero)
+    console.log("Row X  " + countXRow);
+    console.log("Column X  " + countXColumn);
+    console.log("leftDiagonal X  " + leftDiagonalX)
+    console.log("rightDiagonal X  " + rightDiagonalX)
 
-    // Compare user's and computure's 'close to win' positions and
-    // assign variable accordingly
-    var largestCount = largestCountX >= largestCountZero ?  largestCountX : largestCountZero;
-    var row =  largestCountX >= largestCountZero ? rowX : rowZero;
-    var column = largestCountX >= largestCountZero ? columnX : columnZero;
-    var leftDiagonal = largestCountX >= largestCountZero ?  leftDiagonalX : leftDiagonalZero;
-    var rightDiagonal = largestCountX >= largestCountZero ? rightDiagonalX : rightDiagonalZero;
-    var rowMax = largestCountX >= largestCountZero ? rowXmax : rowZeroMax;
-    var columnMax = largestCountX >= largestCountZero ? columnXmax : columnZeroMax;
+    console.log("Row O  " + countZeroRow)
+    console.log("Column O  " + countZeroColumn);
+    console.log("leftDiagonal O  " + leftDiagonalZero)
+    console.log("rightDiagonal O  " + rightDiagonalZero)
 
-    // Largest count can be 0 only when neither X nor O has a close to win position
-    // Otherwise we want to generate coordinates based on close to win position
-    if (largestCount.toString() != "0" ) {
-      id = generateCoordinates(largestCount, row, column, leftDiagonal, rightDiagonal, rowMax, columnMax);
-    } else if (largestCount.toString() == "0" &&
+    if (largestCountX >= largestCountZero && largestCountX != 0) {
+      var value = cross;
+      var compareWithValue = zero
+      id = generateCoordinates(largestCountX, arrayX, value, compareWithValue);
+    } else if (largestCountZero > largestCountX && largestCountZero != 0) {
+      var value = zero;
+      var compareWithValue = cross
+      id = generateCoordinates(largestCountZero, arrayZero, value, compareWithValue);
+    } else if (largestCountX == 0 && largestCountZero == 0 &&
               (!isEmpty(countNumberInRow(null)) &&
               !isEmpty(countNumberInColumn(null)) &&
               !isEmptyDiagonal(countAllLeftDiagonal(null)) &&
               !isEmptyDiagonal(countAllRightDiagonal(null)))) {
       id = null;
     } else {
+      console.log('got here')
       row = generateRandomCoordinate(boardLength - 1);
       column = generateRandomCoordinate(boardLength - 1);
 
@@ -236,39 +198,6 @@ $(document).ready(function(){
     return diagonal == boardLength;
   }
 
-  function  coordinates(x, y) {
-    row = x;
-    column = y;
-  }
-  // If X and O are on the same row/column
-  // we don't need to count them,
-  // neigher computer nor user can win
-  function positionsCloseToWinRowAndColumn(x, o) {
-    for (var i = 0; i < boardLength; i++) {
-      if (x[i] > 0 && o[i] > 0) {
-        x[i] = 0;
-        o[i] = 0;
-      }
-    }
-    console.log(new coordinates(x, o))
-    return new coordinates(x, o)
-    // return [x, o];
-  }
-
-  // If X and O are on the same row/column
-  // we don't need to count them,
-  // neigher computer nor user can win
-  function positionsCloseToWinDiagonal(diagonalX, diagonalO) {
-    if (diagonalX > 0 && diagonalO > 0) {
-      diagonalX = 0;
-      diagonalO = 0;
-    }
-    return [diagonalX, diagonalO];
-  }
-
-  // Finds entire empty row or column
-  // Returns an array of count per row or column
-  // If value is 4 - that means it's empty
   function hasEmptyInRowOrColumn(arrayOfEmptyPositionsCount) {
     for (var i = 0; i < boardLength; i ++) {
       if (arrayOfEmptyPositionsCount[i] >= 1) {
@@ -287,91 +216,43 @@ $(document).ready(function(){
 
   // Generates coordinates based on either X positions to prevent user from win
   // or based on O positions in order to win
-  function generateCoordinates(largestCount, row, column, leftDiagonal,
-                              rightDiagonal, rowMax, columnMax){
+  function generateCoordinates(largestCount, array, value, compareWithValue){
     var x, y;
 
-    if (largestCount.toString() == rowMax.toString()) {
-      // console.log("largest count row")
-      if (hasEmptyInRowOrColumn(countNumberInRow(null))) {
-        x = row.indexOf(largestCount);
+    if (largestCount.toString() == array[0].toString()) {
+      x = countNumberInRow1(value, compareWithValue).coordinate;
+      y = generateRandomCoordinate(boardLength - 1);
+      while (board[x][y] != null) {
         y = generateRandomCoordinate(boardLength - 1);
-        while (board[x][y] != null) {
-          // console.log("loop 1")
-          y = generateRandomCoordinate(boardLength - 1);
-        }
-      } else if (hasEmptyInRowOrColumn(countNumberInColumn(null)) ||
-                hasEmptyInDiagonal(countAllRightDiagonal(null)) ||
-                hasEmptyInDiagonal(countAllLeftDiagonal(null))) {
-        x = generateRandomCoordinate(boardLength - 1);
-        y = generateRandomCoordinate(boardLength - 1);
-        while (board[x][y] != null) {
-          x = generateRandomCoordinate(boardLength - 1);
-          y = generateRandomCoordinate(boardLength - 1);
-        }
       }
-    } else if (largestCount.toString() == columnMax.toString()) {
-      // console.log("largest count column")
-      if (hasEmptyInRowOrColumn(countNumberInColumn(null))) {
-        y = column.indexOf(largestCount);
-        x = generateRandomCoordinate(boardLength - 1);
+    } else if (largestCount.toString() == array[1].toString()) {
+      y = countNumberInColumn1(value, compareWithValue).coordinate;;
+      x = generateRandomCoordinate(boardLength - 1);
 
-        while (board[x][y] != null) {
-          // console.log("loop 2")
-          x = generateRandomCoordinate(boardLength - 1);
-        }
-      } else if (hasEmptyInRowOrColumn(countNumberInRow(null)) ||
-                hasEmptyInDiagonal(countAllRightDiagonal(null)) ||
-                hasEmptyInDiagonal(countAllLeftDiagonal(null))) {
+      while (board[x][y] != null) {
+        // console.log("loop 2")
         x = generateRandomCoordinate(boardLength - 1);
-        y = generateRandomCoordinate(boardLength - 1);
-        while (board[x][y] != null) {
-          x = generateRandomCoordinate(boardLength - 1);
-          y = generateRandomCoordinate(boardLength - 1);
-        }
       }
-    } else if(largestCount.toString() == leftDiagonal.toString()){
-      // console.log("largest count left diagonal")
-      if (hasEmptyInDiagonal(countAllLeftDiagonal(null))) {
+    } else if(largestCount.toString() == array[2].toString()){
+      i = generateRandomCoordinate(boardLength - 1);
+
+      while (board[i][i] != null) {
         i = generateRandomCoordinate(boardLength - 1);
-
-        while (board[i][i] != null) {
-          // console.log("loop 3")
-          i = generateRandomCoordinate(boardLength - 1);
-        }
-        x = i;
-        y = i;
-      } else if (hasEmptyInRowOrColumn(countNumberInRow(null)) ||
-                hasEmptyInRowOrColumn(countNumberInColumn(null))) {
-        x = generateRandomCoordinate(boardLength - 1);
-        y = generateRandomCoordinate(boardLength - 1);
-        while (board[x][y] != null) {
-          x = generateRandomCoordinate(boardLength - 1);
-          y = generateRandomCoordinate(boardLength - 1);
-        }
       }
-    } else if (largestCount.toString() == rightDiagonal.toString()) {
-      // console.log("largest count right diagonal")
-      if (hasEmptyInDiagonal(countAllRightDiagonal(null))) {
+      x = i;
+      y = i;
+    } else if (largestCount.toString() == array[3].toString()) {
+      i = generateRandomCoordinate(boardLength - 1);
+
+      while (board[boardLength - i - 1][i]!= null) {
         i = generateRandomCoordinate(boardLength - 1);
-
-        while (board[boardLength - i - 1][i]!= null) {
-          // console.log("loop 4")
-          i = generateRandomCoordinate(boardLength - 1);
-        }
-        x = boardLength - i - 1;
-        y = i;
-      } else if (hasEmptyInRowOrColumn(countNumberInRow(null)) ||
-                hasEmptyInRowOrColumn(countNumberInColumn(null))) {
-        x = generateRandomCoordinate(boardLength - 1);
-        y = generateRandomCoordinate(boardLength - 1);
-        while(board[x][y] != null) {
-          x = generateRandomCoordinate(boardLength - 1);
-          y = generateRandomCoordinate(boardLength - 1);
-        }
       }
+      x = boardLength - i - 1;
+      y = i;
     }
-    return id = x.toString() + y.toString();
+    id = x.toString() + y.toString()
+    console.log(id)
+    return id;
   }
 
   function countNumberInRow(value) {
@@ -390,6 +271,62 @@ $(document).ready(function(){
     return result;
   }
 
+  function Coordinates(count, coordinate){
+    this.count = count;
+    this.coordinate = coordinate;
+  }
+
+  function countNumberInRow1(value, compareWithValue) {
+    var maxCount = 0;
+    var finalCoordinate;
+
+    for (var i = 0; i < boardLength; i ++) {
+      var count = 0;
+      var currentCoordinate = i;
+
+      for (var j = 0; j < boardLength; j ++) {
+        if (board[i][j] == compareWithValue) {
+          count = 0;
+          currentCoordinate = null;
+          break;
+        } else if (board[i][j] == value) {
+          count ++;
+        }
+      }
+
+      if (maxCount < count) {
+        maxCount = count;
+        finalCoordinate = currentCoordinate;
+      }
+    }
+    return new Coordinates(maxCount, finalCoordinate);
+  }
+
+  function countNumberInColumn1(value, compareWithValue) {
+    var maxCount = 0;
+    var finalCoordinate;
+
+    for (var i = 0; i < boardLength; i ++) {
+      var count = 0;
+      var currentCoordinate = i;
+
+      for (var j = 0; j < boardLength; j ++) {
+        if (board[j][i] == compareWithValue) {
+          count = 0;
+          currentCoordinate = null;
+          break;
+        } else if (board[j][i] == value) {
+          count ++;
+        }
+      }
+      if (maxCount < count) {
+        maxCount = count;
+        finalCoordinate = currentCoordinate;
+      }
+    }
+    return new Coordinates(maxCount, finalCoordinate);
+  }
+
   function countNumberInColumn(value) {
     var count = 0;
     var result = [];
@@ -406,11 +343,40 @@ $(document).ready(function(){
     return result;
   }
 
+  function countAllLeftDiagonal1(value, compareWithValue) {
+    var count = 0;
+
+    for (var i = 0; i < boardLength; i ++) {
+      if (board[i][i] == compareWithValue) {
+        count = 0;
+        break;
+      } else if (board[i][i] == value){
+        count ++;
+      }
+    }
+    return count;
+  }
+
+
   function countAllLeftDiagonal(value) {
     var count = 0;
 
     for (var i = 0; i < boardLength; i ++) {
       if (board[i][i] == value) {
+        count ++;
+      }
+    }
+    return count;
+  }
+
+  function countAllRightDiagonal1(value, compareWithValue){
+    var count = 0;
+
+    for (var i = 0; i < boardLength; i ++) {
+      if(board[boardLength - i - 1][i] == compareWithValue) {
+        count = 0;
+        break;
+      } else if (board[boardLength - i - 1][i] == value) {
         count ++;
       }
     }
