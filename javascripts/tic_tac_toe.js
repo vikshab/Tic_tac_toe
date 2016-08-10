@@ -7,15 +7,8 @@ $(document).ready(function(){
   var move = 1;
   var win = false;
   var noWin = false;
-  var userVsUser = "userVsUser";
-  var userVsComputer = "userVsComputer";
   var player;
   var computer;
-
-  // Set game version
-  $(".game_version").click(function() {
-    game = $(this).attr("value");
-  });
 
   // Set user player to selected value (X or O)
   $(".user_player").click(function() {
@@ -28,58 +21,28 @@ $(document).ready(function(){
   });
 
   $(".cell").click(function() {
-    // if (game == userVsUser) {
-    //   if (win) {
-    //     return;
-    //   }
-    //   var id = $(this).attr("id");
-    //   var row = id[0];
-    //   var column = id[1];
-    //   var player;
-    //
-    //   if (board[row][column] == null) {
-    //     if (move == 1 || move % 2 != 0) {
-    //       player = cross;
-    //       insertIntoCell(id, cross);
-    //     } else if (move % 2 == 0) {
-    //       player = zero;
-    //       insertIntoCell(id, zero);
-    //     }
-    //
-    //     if (move >= 4) {
-    //       checkWin(board, row, column, boardLength, player);
-    //       // if (player == cross) {
-    //       //   var hint = selectCoordinates(row, column, board, boardLength);
-    //       //   console.log(hint)
-    //       // }
-    //     }
-    //     move ++;
-    //   }
-    // }
 
-    if (game == userVsComputer) {
-      if (win || noWin) {
-        return;
-      }
+    if (win || noWin) {
+      return;
+    }
 
-      var id = $(this).attr("id");
-      var row = id[0];
-      var column = id[1];
+    var id = $(this).attr("id");
+    var row = id[0];
+    var column = id[1];
 
-      if (move == 1 || move % 2 != 0) {
-        moveUser(row, column, id);
-      }
+    if (move == 1 || move % 2 != 0) {
+      moveUser(row, column, id);
+    }
 
-      if (move == 2) {
-        firstRandomComputersMove();
-      }
+    if (move == 2) {
+      firstRandomComputersMove();
+    }
 
-      if (move % 2 == 0 && move > 3) {
-        strategicComputersMove(row, column, board, boardLength)
-      }
+    if (move % 2 == 0 && move > 3) {
+      strategicComputersMove(row, column, board, boardLength)
+    }
 
-      checkLooseLooseSituation();
-    };
+    checkLooseLooseSituation();
   });
 
   function moveUser(row, column, id) {
@@ -398,7 +361,7 @@ $(document).ready(function(){
     board[id[0]][id[1]] = value;
 
     // Lets make computer think for a seconds:)
-    if (game == userVsComputer && value == computer) {
+    if (value == computer) {
       setTimeout(function() { document.getElementById(id).innerHTML = value; }, 500);
     } else {
       document.getElementById(id).innerHTML = value;
