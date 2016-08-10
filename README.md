@@ -10,4 +10,7 @@
 
 There is an example of interface:
 
-![alt text](https://github.com/vikshab/Tic_tac_toe/tree/master/images/board5x5.png)
+<!-- ![alt text](https://github.com/vikshab/Tic_tac_toe/tree/master/images/board5x5.png) -->
+
+
+![alt text](https://github.com/vikshab/Tic_tac_toe/tree/master/images/board5x5.png "Logo Title Text 1")
