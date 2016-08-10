@@ -150,7 +150,7 @@ $(document).ready(function(){
   /**
    * @summary Play function triggers every time user clicks on the cell.
    *
-   * @param {object} $that Div(cell) that user clicks on.
+   * @param {object} that Div(cell) that user clicks on.
    */
   function play(that) {
 
@@ -178,7 +178,7 @@ $(document).ready(function(){
   /**
    * @summary Insert user's value into the cell and check if there is a win.
    *
-   * @param {string} $id Cell's id.
+   * @param {string} id Cell's id.
 
    */
   function userGoes(id) {
@@ -211,7 +211,7 @@ $(document).ready(function(){
   /**
    * @summary Insert computer's value into the cell and check if there is a win.
    *
-   * @param {string} $id Cell's id, that user clicks on.
+   * @param {string} id Cell's id, that user clicks on.
    */
   function computerThinksBeforeGo(id) {
     var id = selectCoordinates(id[0], id[1]);
@@ -268,8 +268,8 @@ $(document).ready(function(){
   /**
    * @summary Generate coordinates based on the positions of X or O.
    *
-   * @param {string} $x Coordinate x of value.
-   * @param {string} $y Coordinate y of value.
+   * @param {string} x Coordinate x of value.
+   * @param {string} y Coordinate y of value.
    * @return {string} Random coordinates "xy"
    */
   function selectCoordinates(x, y) {
@@ -312,7 +312,7 @@ $(document).ready(function(){
   /**
    * @summary Check if row/column/diagonals is empty.
    *
-   * @param {integer} $value Count of NUll by row||column||diagonal.
+   * @param {integer} value Count of NUll by row||column||diagonal.
    * @return {bolean} True if board has empty row||column||diagonal.
    */
   function isEmpty(value) {
@@ -322,10 +322,10 @@ $(document).ready(function(){
   /**
    * @summary Helper method for selectCoordinates(x, y) function.
    *
-   * @param {integer} $largestCount The largest count of X or O on the board.
-   * @param {object} $array Array of X or O counts on the board.
-   * @param {string} $value Value on X or O (needed to internal funcion countNumberInRow()).
-   * @param {string} $compareWithValue Value of O or X (the opposite to the above value).
+   * @param {integer} largestCount The largest count of X or O on the board.
+   * @param {object} array Array of X or O counts on the board.
+   * @param {string} value Value on X or O (needed to internal funcion countNumberInRow()).
+   * @param {string} compareWithValue Value of O or X (the opposite to the above value).
    * @return {string} Random string coordinates "xy".
    */
   function generateCoordinates(largestCount, array, value, compareWithValue){
@@ -379,8 +379,8 @@ $(document).ready(function(){
   /**
    * @summary Helper method for countNumberInRow() and countNumberInColumn() functions.
    *
-   * @param {integer} $count The largest count of X or O on the board.
-   * @param {integer} $coordinate Coordinate of the largest count of X or O.
+   * @param {integer} count The largest count of X or O on the board.
+   * @param {integer} coordinate Coordinate of the largest count of X or O.
    */
   function Coordinates(count, coordinate){
     this.count = count;
@@ -390,8 +390,8 @@ $(document).ready(function(){
   /**
    * @summary Find the largest count of X or O by rows.
    *
-   * @param {string} $value The value (X or O) that need to be counted on rows.
-   * @param {string} $compareWithValue The opposite (O or X) to the above value.
+   * @param {string} value The value (X or O) that need to be counted on rows.
+   * @param {string} compareWithValue The opposite (O or X) to the above value.
    * @return {object} Object that contains largest count of the value and its row number
    * if row contains both values - count set to 0 and coordinate to null.
    */
@@ -424,8 +424,8 @@ $(document).ready(function(){
   /**
    * @summary Find the largest count of X or O by columns.
    *
-   * @param {string} $value The value (X or O) that need to be counted on the columns.
-   * @param {string} $compareWithValue The opposite (O or X) to the above value.
+   * @param {string} value The value (X or O) that need to be counted on the columns.
+   * @param {string} compareWithValue The opposite (O or X) to the above value.
    * @return {object} object that contains largest count of the value and its column number
    * if column contains both values - count set to 0 and coordinate to null.
    */
@@ -457,8 +457,8 @@ $(document).ready(function(){
   /**
    * @summary Find the largest count of X or O on the left diagonal.
    *
-   * @param {string} $value The value (X or O) that need to be counted on the diagonal.
-   * @param {string} $compareWithValue The opposite (O or X) to the above value.
+   * @param {string} value The value (X or O) that need to be counted on the diagonal.
+   * @param {string} compareWithValue The opposite (O or X) to the above value.
    * @return {integer} Count of X or O on the left diagonal, if diagonal contains
    * both values - returns 0.
    */
@@ -479,8 +479,8 @@ $(document).ready(function(){
   /**
    * @summary Find the largest count of X or O on the right diagonal.
    *
-   * @param {string} $value The value (X or O) that need to be counted on the diagonal.
-   * @param {string} $compareWithValue The opposite (O or X) to the above value.
+   * @param {string} value The value (X or O) that need to be counted on the diagonal.
+   * @param {string} compareWithValue The opposite (O or X) to the above value.
    * @return {integer} Count of X or O on the right diagonal, if diagonal contains
    * both values - returns 0.
    */
@@ -501,8 +501,8 @@ $(document).ready(function(){
   /**
    * @summary Insert value (X or O) in a specific cell on the board.
    *
-   * @param {string} $id Cell's id.
-   * @param {string} $value The value (X or O) that has to be inserted into the cell.
+   * @param {string} id Cell's id.
+   * @param {string} value The value (X or O) that has to be inserted into the cell.
    */
   function insertIntoCell(id, value) {
     BOARD[id[0]][id[1]] = value;
@@ -518,9 +518,9 @@ $(document).ready(function(){
   /**
    * @summary Check win for the value of X or O.
    *
-   * @param {string} $x Coordinate x on the board that user clicks on.
-   * @param {string} $y Coordinate y on the board that user clicks on.
-   * @param {string} $player User's or Computer's value.
+   * @param {string} x Coordinate x on the board that user clicks on.
+   * @param {string} y Coordinate y on the board that user clicks on.
+   * @param {string} player User's or Computer's value.
    * @return {boolean} True if there is a win on the board.
    */
   function checkWin(x, y, player) {
@@ -539,7 +539,7 @@ $(document).ready(function(){
    /**
     * @summary Check win for the value of X or O on the row.
     *
-    * @param {string} $x Coordinate x on the board that user clicks on.
+    * @param {string} x Coordinate x on the board that user clicks on.
     * @return {boolean} True if row has a win combination.
     */
   function checkRow(x) {
