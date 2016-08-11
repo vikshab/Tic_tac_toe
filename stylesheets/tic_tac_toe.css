@@ -11,6 +11,56 @@ html {
   left: 2.5rem;
 }
 
+.palette_cell {
+  color: white;
+  font-size: 5px;
+  text-align: center;
+  border-radius: 0.1rem;
+  float: left;
+  height: 0.5rem;
+  margin: 0.1rem 0 0 0.1rem;
+  width: 0.5rem;
+}
+/* slateblue */
+.color6A5ACD {
+  background-color: #6A5ACD !important;
+}
+
+/* tomato */
+.colorFF6347 {
+  background-color: #FF6347 !important;
+}
+
+/* rebeccapurple */
+.color663399 {
+  background-color: #663399 !important;
+}
+
+/* darkseagreen */
+.color8FBC8F {
+  background-color: #8FBC8F !important;
+}
+
+/* lightyellow */
+.colorFFFFE0 {
+  background-color: #FFFFE0 !important;
+}
+
+/* lightsteelblue */
+.colorB0C4DE {
+  background-color: #B0C4DE !important;
+}
+
+/* darkslategreen */
+.color2F4F4F {
+  background-color: #2F4F4F !important;
+}
+
+/* deepskyblue */
+.color00BFFF {
+  background-color: #00BFFF !important;
+}
+
 #board3x3 {
   height: 9.4rem;
   width: 9.4rem;
