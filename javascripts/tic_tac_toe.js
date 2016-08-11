@@ -1,23 +1,4 @@
 $(document).ready(function(){
-  // Board options
-  var BOARD3x3 = [[null, null, null],
-                  [null, null, null],
-                  [null, null, null]];
-  var BOARD4x4 = [[null, null, null, null],
-                  [null, null, null, null],
-                  [null, null, null, null],
-                  [null, null, null, null]];
-  var BOARD5x5 = [[null, null, null, null, null],
-                  [null, null, null, null, null],
-                  [null, null, null, null, null],
-                  [null, null, null, null, null],
-                  [null, null, null, null, null]];
-  var BOARD6x6 =  [[null, null, null, null, null, null],
-                  [null, null, null, null, null, null],
-                  [null, null, null, null, null, null],
-                  [null, null, null, null, null, null],
-                  [null, null, null, null, null, null],
-                  [null, null, null, null, null, null]];
   var BOARD;
   var SELECTEDBOARD;
   var BOARDLENGTH;
@@ -26,6 +7,7 @@ $(document).ready(function(){
   var MOVE;
   var WIN, NOWIN;
   var USER, COMPUTER;
+  var USERSCOLOR, COMPUTERSCOLOR;
 
   /**
    * @summary Set up the value.
@@ -49,6 +31,20 @@ $(document).ready(function(){
   $("#reset").click(function() {
     $(".cell").empty();
     startGame();
+  });
+
+  /**
+   * @summary Set up the color for user.
+   */
+  $(".user_color").click(function() {
+    USERSCOLOR = $(this).attr("value");
+  });
+
+  /**
+   * @summary Set up the color for computer.
+   */
+  $(".computer_color").click(function() {
+    COMPUTERSCOLOR = $(this).attr("value");
   });
 
   /**
@@ -91,22 +87,23 @@ $(document).ready(function(){
    * @summary Draws the game board.
    */
   function drawBoard() {
+    BOARD = [];
 
     // Set up the board size
     switch (SELECTEDBOARD) {
     case "board3x3":
-          BOARD = BOARD3x3;
+          BOARDLENGTH = 3;
           break;
     case "board4x4":
-          BOARD = BOARD4x4;
+          BOARDLENGTH = 4;
           break;
     case "board5x5":
-          BOARD = BOARD5x5;
+          BOARDLENGTH = 5;
           break;
     case "board6x6":
-          BOARD = BOARD6x6;
+          BOARDLENGTH = 6;
           break;
-    default :
+    default:
           null;
     }
 
@@ -123,8 +120,8 @@ $(document).ready(function(){
     gameboard.appendChild(cells);
 
     // Append 'cell' div to 'cells' div
-    for (var i = 0; i < BOARD.length; i ++) {
-      for (var j = 0; j < BOARD.length; j ++) {
+    for (var i = 0; i < BOARDLENGTH; i ++) {
+      for (var j = 0; j < BOARDLENGTH; j ++) {
         var cell = document.createElement('div');
         cell.id = i.toString() + j.toString();
         cell.className = "cell";
@@ -132,6 +129,7 @@ $(document).ready(function(){
         cell.setAttribute("value", "false");
         cells.appendChild(cell);
       }
+      BOARD.push([]);
     }
   }
 
@@ -153,6 +151,7 @@ $(document).ready(function(){
    * @param {object} that Div(cell) that user clicks on.
    */
   function play(that) {
+
 
     if (WIN || NOWIN) {
       return;
@@ -231,6 +230,7 @@ $(document).ready(function(){
    */
   function checkLooseLooseSituation() {
     if (NOWIN) {
+      $("#game_name").addClass("animated infinite bounce")
       alert("Loose-loose situation!");
       return;
     }
@@ -506,12 +506,18 @@ $(document).ready(function(){
    */
   function insertIntoCell(id, value) {
     BOARD[id[0]][id[1]] = value;
+    var div = document.getElementById(id);
 
     // Delay in computer's move, so it will insert value a bit later than
     if (value == COMPUTER) {
-      setTimeout(function() { document.getElementById(id).innerHTML = value; }, 500);
+      // div.setAttribute("value", true);
+      setTimeout(function() { div.innerHTML = value; }, 500);
+      setTimeout(function() { $(div).addClass("color" + COMPUTERSCOLOR); }, 500);
     } else {
-      document.getElementById(id).innerHTML = value;
+      div.innerHTML = value;
+      // div.setAttribute("value", true);
+      // var div = document.getElementById(id);
+      $(div).addClass("color" + USERSCOLOR);
     }
   }
 
