@@ -14,3 +14,5 @@ The game board would be updated automatically while switching between game optio
 Here is an example of interface:
 
 ![Image](https://github.com/vikshab/Images/blob/master/board5x5.png?raw=true)
+
+- JavaScript, HTML, JQuery
