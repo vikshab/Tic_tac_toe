@@ -33,20 +33,18 @@ $(document).ready(function(){
     startGame();
   });
 
-  /**
-   * @summary Set up the color for user.
-   */
-  $(".user_color").click(function() {
-    USERSCOLOR = $(this).attr("value");
-  });
+  // Set color for user
+  var userColor = document.getElementById("user");
+    userColor.addEventListener("input", function() {
+      USERSCOLOR = userColor.value;
+    }, false);
 
-  /**
-   * @summary Set up the color for computer.
-   */
-  $(".computer_color").click(function() {
-    COMPUTERSCOLOR = $(this).attr("value");
-  });
-
+  // Set color for computer;
+    var computerColor = document.getElementById("computer");
+    computerColor.addEventListener("input", function() {
+      COMPUTERSCOLOR = computerColor.value;
+    }, false);
+    
   /**
    * @summary Set up the game configuration.
    */
@@ -512,12 +510,15 @@ $(document).ready(function(){
     if (value == COMPUTER) {
       // div.setAttribute("value", true);
       setTimeout(function() { div.innerHTML = value; }, 500);
-      setTimeout(function() { $(div).addClass("color" + COMPUTERSCOLOR); }, 500);
+      setTimeout(function() {
+        if (COMPUTERSCOLOR !== undefined) {
+          div.style.backgroundColor = `${COMPUTERSCOLOR}`
+        }; }, 500);
     } else {
       div.innerHTML = value;
-      // div.setAttribute("value", true);
-      // var div = document.getElementById(id);
-      $(div).addClass("color" + USERSCOLOR);
+      if (USERSCOLOR !== undefined) {
+        div.style.backgroundColor = `${USERSCOLOR}`;
+      }
     }
   }
 
