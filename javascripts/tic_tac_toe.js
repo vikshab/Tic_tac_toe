@@ -26,7 +26,6 @@ $(document).ready(function(){
    */
   $("#reset").click(function() {
     $(".cell").empty();
-    // $(".cell").css('background', 'rgba(0, 0, 0, 0.15)');
     startGame();
   });
 
@@ -223,7 +222,6 @@ $(document).ready(function(){
    */
   function checkLooseLooseSituation() {
     if (NOWIN) {
-      $("#game_name").addClass("animated infinite bounce")
       alert("Loose-loose situation!");
       return;
     }
