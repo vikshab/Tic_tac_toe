@@ -1,18 +1,23 @@
-# TIC-TAC-TOE Game  
-### User stories:
-- User can select the value of **X** or **O**
-- User can select the size of the game board  
-the following options are available:  
-  - board 3x3
-  - board 4x4
-  - board 5x5
-  - board 6x6
-- User can decorate game board selecting colors (optional)
+# TIC-TAC-TOE Game
+- Pick the value **X** or **O** you want to play with
+- Choose the board size:
+  - 3x3
+  - 4x4
+  - 5x5
+  - 6x6
+  - 7x7
+  - 8x8
+- Decorate your cells with any colors you want
 
-The game board would be updated automatically while switching between game options (no need to press **reset** button). Use **reset** if you want to restart the game.
 
-Here is an example of interface:
+Here is an example of how you select color:
+![Image](https://github.com/vikshab/Images/blob/master/colors.png?raw=true)
 
-![Image](https://github.com/vikshab/Images/blob/master/board5x5.png?raw=true)
+Here are examples of different board sizes:
+![Image](https://github.com/vikshab/Images/blob/master/board6x6.png?raw=true)
+
+![Image](https://github.com/vikshab/Images/blob/master/board7x7.png?raw=true)
+
+![Image](https://github.com/vikshab/Images/blob/master/board8x8.png?raw=true)
 
 - JavaScript, HTML, JQuery
