@@ -24,25 +24,17 @@
             <label><input type="radio" name="optradio" class="user_player" value="X">X</label>
           </div>
           <hr>
-          <p>Choose game board size:</p>
-          <div class="radio">
-            <label><input type="radio" name="optradio1" class="selected_board" value="board3x3">3x3</label>
-          </div>
-          <div class="radio">
-            <label><input type="radio" name="optradio1" class="selected_board" value="board4x4">4x4</label>
-          </div>
-          <div class="radio">
-            <label><input type="radio" name="optradio1" class="selected_board" value="board5x5">5x5</label>
-          </div>
-          <div class="radio">
-            <label><input type="radio" name="optradio1" class="selected_board" value="board6x6">6x6</label>
-          </div>
-          <hr>
+          <p>Change board size:</p>
+          <form action="">
+            <input type="range" id="board_length" value="3" min="3" max="8">
+          </form>
+          <p id="board_size">3</p>
+          <!-- <hr> -->
           <p>Select your color:</p>
           <form action="">
             <input type="color" id="user">
           </form>
-          <hr>
+          <!-- <hr> -->
           <p>Select computer's color:</p>
           <form action="">
             <input type="color" id="computer">

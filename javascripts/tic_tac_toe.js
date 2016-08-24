@@ -1,73 +1,86 @@
 $(document).ready(function(){
   var BOARD;
-  var SELECTEDBOARD;
-  var BOARDLENGTH;
+  var BOARDLENGTH = 3;
   var CROSS = "X";
   var ZERO = "O";
-  var MOVE;
-  var WIN, NOWIN;
-  var USER, COMPUTER;
+  var MOVE = 1;
+  var WIN = false;
+  var NOWIN = false;
+  var USER = CROSS;
+  var COMPUTER = ZERO;
   var USERSCOLOR, COMPUTERSCOLOR;
+
+  startGame();
 
   /**
    * @summary Set up the value.
    */
   $(".user_player").click(function() {
     USER = $(this).attr("value");
+    $(".cell").empty();
     startGame();
   });
 
   /**
-   * @summary Set up the board size.
-   */
-  $(".selected_board").click(function() {
-    SELECTEDBOARD = $(this).attr("value");
-    startGame();
-  });
-
-  /**
-   * @summary Reset existing game.
+   * @summary Reset the existing game.
    */
   $("#reset").click(function() {
     $(".cell").empty();
+    // $(".cell").css('background', 'rgba(0, 0, 0, 0.15)');
     startGame();
   });
 
   // Set color for user
   var userColor = document.getElementById("user");
-    userColor.addEventListener("input", function() {
-      USERSCOLOR = userColor.value;
-    }, false);
+  userColor.addEventListener("input", function() {
+    USERSCOLOR = userColor.value;
+  }, false);
 
   // Set color for computer;
-    var computerColor = document.getElementById("computer");
-    computerColor.addEventListener("input", function() {
-      COMPUTERSCOLOR = computerColor.value;
-    }, false);
-    
+  var computerColor = document.getElementById("computer");
+  computerColor.addEventListener("input", function() {
+    COMPUTERSCOLOR = computerColor.value;
+  }, false);
+
+  // Set board size
+  var gameBoard = document.getElementById("board_length");
+  gameBoard.addEventListener("input", function() {
+    document.getElementById("board_size").innerHTML = gameBoard.value;
+    BOARDLENGTH = gameBoard.value;
+    startGame();
+  }, false);
+
   /**
    * @summary Set up the game configuration.
    */
   function startGame() {
 
-    // Cells need to be emptied every time user either switches to a new board size
-    // or reset existing game (so that array's values were null)
-    if (USER && BOARD) {
-      emptyCells();
+    // Creating default board
+    if (!BOARD) {
+      drawBoard();
+      return
     }
 
-    // When user selects value and board size (or just switching between different board sizes)
-    // We want to draw a new board
-    if (USER && SELECTEDBOARD) {
+    // When user changes the board size
+    // or when user resets the game or changes the value
+    // playing with custom colors
+    if (BOARD.length != BOARDLENGTH ||
+            USERSCOLOR != undefined ||
+            COMPUTERSCOLOR != undefined) {
 
-      // before a new board will be drawn the old one must be deleted (if it exists)
+      // Erase the old board
       var boardGameExists = $(".game").children()[0] != null ? true : false;
       if (boardGameExists) {
         $(".game").empty();
       }
       drawBoard();
-      setUpValues();
+    } else {
+
+      // When user resets the game or changes the value
+      // playing with default colors
+      emptyCells();
     }
+    resetValues();
   }
 
   /**
@@ -87,30 +100,13 @@ $(document).ready(function(){
   function drawBoard() {
     BOARD = [];
 
-    // Set up the board size
-    switch (SELECTEDBOARD) {
-    case "board3x3":
-          BOARDLENGTH = 3;
-          break;
-    case "board4x4":
-          BOARDLENGTH = 4;
-          break;
-    case "board5x5":
-          BOARDLENGTH = 5;
-          break;
-    case "board6x6":
-          BOARDLENGTH = 6;
-          break;
-    default:
-          null;
-    }
-
     // Append 'gameboard' div to 'game' div
     var gameLocation = $(".game");
     var gameboard = document.createElement('div');
     var cells = document.createElement('div');
     gameboard.className = "gameboard";
-    gameboard.id = SELECTEDBOARD;
+    gameboard.style.height = BOARDLENGTH * 3 + 0.1 * BOARDLENGTH + "rem";
+    gameboard.style.width = BOARDLENGTH * 3 + 0.1 * BOARDLENGTH + "rem";
     cells.className = "cells";
 
     // Append 'cells' div to "gameboard" div
@@ -135,8 +131,7 @@ $(document).ready(function(){
    * @summary Sets up the Global variables for the game,
    * we need to set them up every time user changes game configuration.
    */
-  function setUpValues() {
-    BOARDLENGTH = BOARD.length;
+  function resetValues() {
     WIN = false;
     NOWIN = false;
     MOVE = 1;
