@@ -9,6 +9,7 @@ $(document).ready(function(){
   var USER = CROSS;
   var COMPUTER = ZERO;
   var USERSCOLOR, COMPUTERSCOLOR;
+  var FAILMESSAGE = "You lost :(";
 
   startGame();
 
@@ -135,6 +136,7 @@ $(document).ready(function(){
     NOWIN = false;
     MOVE = 1;
     COMPUTER = USER == CROSS ? ZERO : CROSS;
+    $("#fail").empty();
   }
 
   /**
@@ -524,12 +526,21 @@ $(document).ready(function(){
    * @return {boolean} True if there is a win on the board.
    */
   function checkWin(x, y, player) {
+
     if (checkRow(x) ||
         checkColumn(y) ||
         checkLeftDiagonal() && BOARD[0][0] == player ||
         checkRightDiagonal() && BOARD[BOARDLENGTH - 1][0] == player) {
         WIN = true;
-        alert(player + " wins!")
+        if (player == COMPUTER) {
+          var audio = new Audio('fail.mp3');
+          audio.play();
+          document.getElementById("fail").innerHTML = `<h2>${FAILMESSAGE}</h2>`;
+          $("#fail").fade( "slow", 0.9 );
+        }
+        else {
+          alert(player + " wins!");
+        }
      return WIN;
     }
      return false;

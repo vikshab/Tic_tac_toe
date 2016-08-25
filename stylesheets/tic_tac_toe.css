@@ -23,11 +23,23 @@ html {
   width: 3rem;
 }
 
+#fail {
+  position: relative;
+  left: 2.5rem;
+  color: red;
+  height: 1rem;
+  text-align: center;
+}
+
 /* Set gray background color and 100vh height */
 .sidenav {
   padding-top: 20px;
   background-color: #f1f1f1;
   height:100vh
+}
+
+.text-left {
+  height: 100vh;
 }
 
 /* On small screens, set height to 'auto' for sidenav and grid */
@@ -36,5 +48,13 @@ html {
     height: auto;
     padding: 15px;
     width: 100vh;
+  }
+
+  .gameboard, #fail {
+    position: static;
+  }
+  
+  form {
+    display: inline-block;
   }
 }
