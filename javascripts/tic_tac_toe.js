@@ -10,6 +10,8 @@ $(document).ready(function(){
   var COMPUTER = ZERO;
   var USERSCOLOR, COMPUTERSCOLOR;
   var FAILMESSAGE = "You lost :(";
+  var NOWINMESSAGE = "Loose-loose situation!";
+  var WINMESSAGE = "You won it!";
 
   startGame();
 
@@ -136,7 +138,7 @@ $(document).ready(function(){
     NOWIN = false;
     MOVE = 1;
     COMPUTER = USER == CROSS ? ZERO : CROSS;
-    $("#fail").empty();
+    $("#message").empty();
   }
 
   /**
@@ -224,7 +226,7 @@ $(document).ready(function(){
    */
   function checkLooseLooseSituation() {
     if (NOWIN) {
-      alert("Loose-loose situation!");
+      document.getElementById("message").innerHTML = `<h2>${NOWINMESSAGE}</h2>`;
       return;
     }
   }
@@ -503,12 +505,11 @@ $(document).ready(function(){
 
     // Delay in computer's move, so it will insert value a bit later than
     if (value == COMPUTER) {
-      // div.setAttribute("value", true);
-      setTimeout(function() { div.innerHTML = value; }, 500);
+      setTimeout(function() { div.innerHTML = value; }, 700);
       setTimeout(function() {
         if (COMPUTERSCOLOR !== undefined) {
           div.style.backgroundColor = `${COMPUTERSCOLOR}`
-        }; }, 500);
+        }; }, 700);
     } else {
       div.innerHTML = value;
       if (USERSCOLOR !== undefined) {
@@ -535,11 +536,10 @@ $(document).ready(function(){
         if (player == COMPUTER) {
           var audio = new Audio('fail.mp3');
           audio.play();
-          document.getElementById("fail").innerHTML = `<h2>${FAILMESSAGE}</h2>`;
-          $("#fail").fade( "slow", 0.9 );
+          document.getElementById("message").innerHTML = `<h2>${FAILMESSAGE}</h2>`;
         }
         else {
-          alert(player + " wins!");
+          document.getElementById("message").innerHTML = `<h2>${WINMESSAGE}</h2>`;
         }
      return WIN;
     }

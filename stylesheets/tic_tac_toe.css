@@ -23,10 +23,9 @@ html {
   width: 3rem;
 }
 
-#fail {
+#message {
   position: relative;
   left: 2.5rem;
-  color: red;
   height: 1rem;
   text-align: center;
 }
@@ -53,7 +52,7 @@ html {
   .gameboard, #fail {
     position: static;
   }
-  
+
   form {
     display: inline-block;
   }
