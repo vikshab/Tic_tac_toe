@@ -1,0 +1,8 @@
+{
+  "name" : "tic-tac-toe",
+  "version" : "0.0.1",
+  "description" : "My tic-tac-toe game",
+  "dependencies" : {
+    "mime" : "~1.2.7"
+  }
+}
